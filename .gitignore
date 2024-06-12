@@ -1,6 +1,9 @@
 # venv
 .venv
 poetry.lock
+logs/*
 
 # python
 __pychache__
+migrations
+
