@@ -1,0 +1,6 @@
+# venv
+.venv
+poetry.lock
+
+# python
+__pychache__
