@@ -15,9 +15,14 @@ LOGGING = {
     },
     "formatters": {
         "simple": {
-            "format": "",
+            "format": "{asctime} {levelname} >> {message}",
             "style": "}",
         }
     },
-    "loggers": {},
+    "loggers": {
+        "printers_update": {
+            "handlers": ["printers_update"],
+            "propagate": False,
+        }
+    },
 }
