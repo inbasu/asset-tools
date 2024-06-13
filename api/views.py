@@ -34,7 +34,7 @@ class PrinterRunView(APIView):
                 Printer can have only 30 labels in queue
                 Split items by 30 in task and send it with deley"""
             return Response(result, status=HTTP_200_OK)
-        except e:
+        except Exception:
             return Response({}, status=HTTP_400_BAD_REQUEST)
 
 

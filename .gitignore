@@ -1,9 +1,13 @@
 # venv
 .venv
 poetry.lock
-logs/*
+
 
 # python
-__pychache__
+__pycache__
 migrations
 
+
+# dev
+*.sqlite3
+logs/*

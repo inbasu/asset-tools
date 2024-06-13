@@ -11,12 +11,13 @@ LOGGING = {
             "level": "INFO",
             "class": "logging.FileHandler",
             "filename": "logs/printers_update.log",
+            "formatter": "simple",
         },
     },
     "formatters": {
         "simple": {
             "format": "{asctime} {levelname} >> {message}",
-            "style": "}",
+            "style": "{",
         }
     },
     "loggers": {
