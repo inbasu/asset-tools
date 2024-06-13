@@ -1,5 +1,8 @@
-from django.db import models
 import subprocess
+
+from django.db import models
+
+HOST = ""
 
 
 # Create your models here.
@@ -12,11 +15,12 @@ class Printer(models.Model):
     def __str__(self) -> str:
         return str(self.name)
 
-    def print(self) -> None:
-        pass
+    def online(self) -> bool:
+        args = ["powershel.exe", "ping", "-n", "1", self.ip]
+        stdout: str = subprocess.run(args, capture_output=True).stdout.decode("cp437", "ignore")
+        return not bool("100% loss" in stdout)
 
-    def ping(self) -> bool:
-        return True
+    """ Update logic """
 
     def update(self) -> list:
         updated = set()
@@ -27,9 +31,12 @@ class Printer(models.Model):
         return updated
 
     def printer_from_host(self) -> list[dict]:
-        stdout: str = subprocess.run([], capture_output=True).stdout.decode("utf-8", "ignore")
+        args = ["powershel.exe", f"Get-Printers -ComputerName {HOST}"]
+        stdout: str = subprocess.run(args, capture_output=True).stdout.decode("cp437", "ignore")
         data = eval(stdout)
         return [self.decode(printer) for printer in data]
 
     def decode(self, printer_data) -> dict:
         return {}
+
+    """ Print logic """
