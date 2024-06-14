@@ -16,7 +16,10 @@ class PrinterListView(APIView):
     http_method_names = ["get"]
 
     def get(self, request) -> Response:
-        data = Printer.objects.filter(name=request.GET.get("mask", ""))
+        data = Printer.objects.all()
+        # There is no regext in sqlite so little fint
+        for exp in request.GET.get("mask", "").split("*"):
+            data = data.filter(name__contains=exp)
         serializer = PrinterSerializer(data, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
 
@@ -29,11 +32,11 @@ class PrinterRunView(APIView):
         printer = request.data.get("PrinterName", "")
         data = request.data.get("data", "")
         try:
-            result = Printer.objects.get(name=printer).print(data)
-            """ Here  we got item data and print in with celery
+            Printer.objects.get(name=printer).print(data)
+            """ TODO: Here  we got item data and print in with celery  
                 Printer can have only 30 labels in queue
                 Split items by 30 in task and send it with deley"""
-            return Response(result, status=HTTP_200_OK)
+            return Response({}, status=HTTP_200_OK)
         except Exception:
             return Response({}, status=HTTP_400_BAD_REQUEST)
 
@@ -43,7 +46,7 @@ class PrinterUpdate(APIView):
     http_method_names = ["post"]
 
     def post(self, request):
-        Printer.update()  # celery task
+        Printer.update()  # TODO: celery task
         return Response({"result": "Printers update was launched"}, status=HTTP_200_OK)
 
 
