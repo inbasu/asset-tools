@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     # User apps
-    "api",
+    "print_service",
 ]
 
 MIDDLEWARE = [
