@@ -3,7 +3,8 @@ from django.urls.resolvers import URLPattern
 
 from print_service.views import PrinterListView, PrinterRunView, PrinterUpdate
 # TODO:
-# [] move printers logic to itself app
+# [*] move printers logic to itself app
+# [] create frontend to check and delete priters
 
 
 urlpatterns: list[URLPattern] = [
