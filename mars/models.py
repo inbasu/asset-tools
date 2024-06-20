@@ -9,16 +9,18 @@ MARS = mars_connection
 
 class InsightEntityManager(models.Manager):
     def create(self, **obj_data):
-        if obj_data.get("scheme", False) and obj_data.get("type_id", False):
-            iql = f"typeId = {obj_data["type_id"]} AND objectType = {obj_data["name"]}"
-            response = MARS.objects_run(iql=iql, scheme=obj_data["scheme"], include_attributes=True, results=1)
-            obj_data["props"] = self.get_entity_props(response)
-            return super().create(**obj_data)
-        return None
+        instance = super().create(**obj_data)
+        response = MARS.iql_run(
+            iql=f"objectType = {instance.name}", scheme=instance.scheme, include_attributes=True, results=1
+        )
+        instance.props.set(self.get_entity_props(response))
+        instance.save()
+        return instance
 
     def get_entity_props(self, iql_response) -> list[Property]:
         if fields := iql_response.get("objectTypeAttributes", {}):
             return [Property.objects.create(attr_id=attr["id"], field=attr["name"]) for attr in fields]
+        return []
 
 
 # Create your models here.
@@ -40,7 +42,7 @@ class InsightEntity(models.Model):
 
     def decode(self, item) -> dict:
         result = {}
-        for attr in item["attributes"]:
+        for attr in item["objectEntries"]["attributes"]:
             key = self.props.objects.get(attr["objectAttributeId"])
             value = None
             for data in attr["objectAttributeValues"]:

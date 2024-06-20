@@ -26,7 +26,7 @@ class Mars:
         url = "https://api.metronom.dev/uaa/oauth/token"
         headers = {"Content-Type": "application/x-www-form-urlencode", "Authorization": f"Basic {self.__token}"}
         params = {"grant_type": "password", "username": self.__username, "password": self.__password}
-        response = requests.get(url, headers, params, verify=False, timeout=20)
+        response = requests.get(url=url, headers=headers, params=params, verify=False, timeout=20)
         if response.status_code == 200:
             self.session.headers["Authorization"] = f'Bearer {response.json()['access_token']}'
             return True
@@ -70,7 +70,7 @@ class Mars:
                 "includeAppributesDeep": deep,
             },
         }
-        response = self.session.post(url=url, headers=self.headers, json=json_data, verify=False)
+        response = self.session.post(url=url, json=json_data, verify=False)
         return response
 
     @status_code
@@ -83,7 +83,7 @@ class Mars:
             "objectTypeId": type_id,
             "attributes": self.form_attributes(attrs),
         }
-        response = self.session.post(url=url, headers=self.headers, json=json_data, verify=False)
+        response = self.session.post(url=url, json=json_data, verify=False)
         return response
 
     @status_code
@@ -95,13 +95,13 @@ class Mars:
             "objectTypeId": type_id,
             "attributes": self.form_attributes(attrs),
         }
-        response = self.session.post(url=url, headers=self.headers, json=json_data, verify=False)
+        response = self.session.post(url=url, json=json_data, verify=False)
         return response
 
     def objects_run(self):
         url = self.URl + "/objects/run"
         json_data = {}
-        response = self.session.post(url=url, headers=self.headers, json=json_data, verify=False)
+        response = self.session.post(url=url, json=json_data, verify=False)
         return response
 
     def form_attributes(self, attrs: dict) -> list:
