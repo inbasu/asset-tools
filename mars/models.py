@@ -19,7 +19,7 @@ class InsightEntityManager(models.Manager):
 
     def get_entity_props(self, iql_response) -> list:
         if fields := iql_response.get("objectTypeAttributes", {}):
-            return [Property.objects.create(attr_id=attr["id"], field=attr["name"]) for attr in fields]
+            return [Property.objects.create(attr_id=attr["id"], name=attr["name"]) for attr in fields]
         return []
 
 
