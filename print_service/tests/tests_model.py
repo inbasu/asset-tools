@@ -40,8 +40,8 @@ class PrinterModelTest(TestCase):
     def test_update_printers(self) -> None:
         result = Printer.update()
         self.assertTrue(result)
-        self.asserTrue(isinstance(result, list))
-        self.asserFalse("PrinterName" not in [printer.name for printer in result])
+        self.assertTrue(isinstance(result, list))
+        self.assertFalse("PrinterName" not in [printer.name for printer in result])
         self.assertTrue(all([printer.name for printer in result]))
         self.assertTrue(all([printer.ip for printer in result]))
 
