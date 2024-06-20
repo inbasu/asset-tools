@@ -79,6 +79,6 @@ class Printer(models.Model):
 
     @classmethod
     def get_app(cls, name: str, masks: dict):
-        for mask_prs in masks:
-            if mask_prs in name:
-                return masks[mask_prs]
+        for mask in masks:
+            if mask["Mask_PRS"] in name:
+                return mask["Mask_App"]

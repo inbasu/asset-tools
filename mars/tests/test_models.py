@@ -10,7 +10,7 @@ class TestInsightEntity(TestCase):
         self.assertTrue(first)
         self.assertEqual(first, created)
         self.assertTrue(created.props.all())
-        self.assertEqual(created.props.all(), first.props.all())
+        self.assertEqual(list(created.props.all()), list(first.props.all()))
 
     def test_update_entity(self):
         pass
@@ -19,7 +19,7 @@ class TestInsightEntity(TestCase):
         pass
 
     def test_search_object(self):
-        InsightEntity.objects.create(name="printerMask", scheme=1, type_id=236)
+        InsightEntity.objects.create(name="PrinterMask", scheme=1, type_id=236)
         objs = InsightEntity.objects.get(name="PrinterMask").search_object(iql='Name="Mask for IT"')
         self.assertTrue(objs)
         self.assertEqual(len(objs), 1)

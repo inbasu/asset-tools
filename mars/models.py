@@ -37,6 +37,7 @@ class InsightEntity(models.Model):
         return self.decode(MARS.create_run(type_id=self.type_id, scheme=self.scheme, attrs=data))
 
     def search_object(self, iql, results=500) -> list[dict]:
+        iql = iql + f' AND objectType = "{self.name}"' if iql else f'objectType = "{self.name}"'
         return [
             self.decode(item) for item in MARS.iql_run(iql=iql, scheme=self.scheme, results=results)["objectEntries"]
         ]
@@ -47,16 +48,16 @@ class InsightEntity(models.Model):
     def decode(self, item) -> dict:
         result = {}
         for attr in item["attributes"]:
-            key = self.props.objects.get(attr["objectAttributeId"])
+            key = self.props.get(attr_id=attr["objectTypeAttributeId"]).name
             value = None
             for data in attr["objectAttributeValues"]:
-                match field := data["displayValue"]:
+                match value:
                     case None:
-                        value = field
+                        value = data["displayValue"]
                     case list():
-                        value.append(field)
+                        value.append(data["displayValue"])
                     case _:
-                        value = [value, field]
+                        value = [value, data["displayValue"]]
             result[key] = value
         return result
 
