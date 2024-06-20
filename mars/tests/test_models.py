@@ -23,7 +23,7 @@ class TestInsightEntity(TestCase):
         objs = InsightEntity.objects.get(name="PrinterMask").search_object(iql='Name="Mask for IT"')
         self.assertTrue(objs)
         self.assertEqual(len(objs), 1)
-        self.assertEqual(objs[0]["MaskApp"], "IT")
+        self.assertEqual(objs[0]["Mask_App"], "IT")
 
     def test_update_object(self):
         pass

@@ -54,7 +54,7 @@ class Printer(models.Model):
     @classmethod
     def printers_from_host(csl) -> list[dict[str:str]]:
         result: list = []
-        args = ["powershell.exe", f"Get-Printers -ComputerName {PRINTSERVER_HOST} | ft name,portname"]
+        args = ["powershell.exe", f"Get-Printer -ComputerName {PRINTSERVER_HOST} | ft name,portname"]
         stdout: str = subprocess.run(args, capture_output=True).stdout.decode("cp437", "ignore")
         # Exaple of stdout sting: "name                    portname(IP) \r\n"
         # Split strings and than split each of them to get listof  tuples [(name, portname(IP))]

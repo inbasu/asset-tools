@@ -71,7 +71,7 @@ class Mars:
                 "includeAppributesDeep": deep,
             },
         }
-        response = self.session.post(url=url, json=json_data, verify=False)
+        response = self.session.post(url=url, json=json_data)
         return response
 
     @status_code
@@ -84,7 +84,7 @@ class Mars:
             "objectTypeId": type_id,
             "attributes": self.form_attributes(attrs),
         }
-        response = self.session.post(url=url, json=json_data, verify=False)
+        response = self.session.post(url=url, json=json_data)
         return response
 
     @status_code
@@ -96,13 +96,13 @@ class Mars:
             "objectTypeId": type_id,
             "attributes": self.form_attributes(attrs),
         }
-        response = self.session.post(url=url, json=json_data, verify=False)
+        response = self.session.post(url=url, json=json_data)
         return response
 
     def objects_run(self):
         url = self.URl + "/objects/run"
         json_data = {}
-        response = self.session.post(url=url, json=json_data, verify=False)
+        response = self.session.post(url=url, json=json_data)
         return response
 
     def form_attributes(self, attrs: dict) -> list:
