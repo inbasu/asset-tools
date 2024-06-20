@@ -28,8 +28,10 @@ class InsightEntity(models.Model):
     name = models.CharField(max_length=32, null=False, blank=False)
     scheme = models.IntegerField(null=False, blank=False)
     type_id = models.IntegerField(null=False, blank=False)
-    props = models.ManyToManyField(to="Property", on_delete=models.CASCADE)
+    props = models.ManyToManyField(to="Property")
     # permissions = models.ManyToManyField(to="permission")
+
+    objects = InsightEntityManager()
 
     def create_object(self, data: dict) -> dict:
         return self.decode(MARS.create_run(type_id=self.type_id, scheme=self.scheme, attrs=data))

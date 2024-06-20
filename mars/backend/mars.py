@@ -6,7 +6,8 @@ logger = logging.getLogger()
 
 
 class Mars:
-    def __init__(self, username, password, token, client_id) -> None:
+    def __init__(self, url, username, password, token, client_id) -> None:
+        self.URL = url
         self.__username = username
         self.__password = password
         self.__token = token
