@@ -1,5 +1,5 @@
 from django.test import TestCase
-
+import random
 from mars.models import InsightEntity
 
 
@@ -26,7 +26,13 @@ class TestInsightEntity(TestCase):
         self.assertEqual(objs[0]["Mask_App"], "IT")
 
     def test_update_object(self):
-        pass
+        hw = InsightEntity.objects.create(name="Hardware", scheme=10, type_id=155)
+        test_laptop = hw.search_object(iql='"INV No" = 800800')
+        new_sn = f"ABCDE{random.randint(10000, 99999)}"
+        hw.update_object(id=test_laptop["Key"], arrts={"Serial No": new_sn})
+        upd_test_laptop = hw.search_object(iql='"INV No" = 800800')
+        self.assertNotEqual(test_laptop, upd_test_laptop)
+        self.assertEqual(upd_test_laptop["Serial No"], new_sn)
 
     def model_permission_denied(self):
         pass

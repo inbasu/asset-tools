@@ -42,8 +42,10 @@ class InsightEntity(models.Model):
             self.decode(item) for item in MARS.iql_run(iql=iql, scheme=self.scheme, results=results)["objectEntries"]
         ]
 
-    def update_object(self, dict) -> dict:
-        return self.decode(MARS.update_run())
+    def update_object(self, object_id: int, arrts: dict) -> dict:
+        return self.decode(
+            MARS.update_run(object_id=object_id, scheme=self.scheme, type_id=self.type_id, attrs=self.encode(arrts))
+        )
 
     def decode(self, item) -> dict:
         result = {}
@@ -61,8 +63,24 @@ class InsightEntity(models.Model):
             result[key] = value
         return result
 
-    def encode(self, item) -> dict:
-        pass
+    def encode(self, attrs: dict) -> dict:
+        result = []
+        for object_type_attribute_name, object_type_attribute_values in attrs.items():
+            attribute_values = []
+            if isinstance(object_type_attribute_values, (list, tuple)):
+                attribute_values = [{"value": value} for value in object_type_attribute_values]
+            elif isinstance(object_type_attribute_values, (int, float, str)):
+                attribute_values = [{"value": object_type_attribute_values}]
+            if attribute_values:
+                result.append(
+                    {
+                        "objectTypeAttributeId": self.props.get(name=object_type_attribute_name).attr_id,
+                        "objectAttributeValues": attribute_values,
+                    }
+                )
+        return result
+
+        return {self.props.get(name=key).attr_id: value for key, value in item.items()}
 
 
 class Property(models.Model):

@@ -82,7 +82,7 @@ class Mars:
             "objectID": object_id,
             "scheme": scheme,
             "objectTypeId": type_id,
-            "attributes": self.form_attributes(attrs),
+            "attributes": attrs,
         }
         response = self.session.post(url=url, json=json_data)
         return response
@@ -104,20 +104,3 @@ class Mars:
         json_data = {}
         response = self.session.post(url=url, json=json_data)
         return response
-
-    def form_attributes(self, attrs: dict) -> list:
-        result = []
-        for object_type_attribute_id, object_type_attribute_values in attrs.items():
-            attribute_values = []
-            if isinstance(object_type_attribute_values, (list, tuple)):
-                attribute_values = [{"value": value} for value in object_type_attribute_values]
-            elif isinstance(object_type_attribute_values, (int, float, str)):
-                attribute_values = [{"value": object_type_attribute_values}]
-            if attribute_values:
-                result.append(
-                    {
-                        "objectTypeAttributeId": object_type_attribute_id,
-                        "objectAttributeValues": attribute_values,
-                    }
-                )
-        return result
