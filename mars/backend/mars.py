@@ -74,12 +74,12 @@ class Mars:
         return response
 
     @status_code
-    def update_run(self, object_id, type_id, sceme, attrs):
+    def update_run(self, object_id, type_id, scheme, attrs):
         url = self.URl + "/update/run"
         json_data = {
             "client_id": self.__client_id,
             "objectID": object_id,
-            "scheme": sceme,
+            "scheme": scheme,
             "objectTypeId": type_id,
             "attributes": self.form_attributes(attrs),
         }
@@ -87,11 +87,11 @@ class Mars:
         return response
 
     @status_code
-    def create_run(self, type_id: int, sceme: int, attrs: dict):
+    def create_run(self, type_id: int, scheme: int, attrs: dict):
         url = self.URL + "/create/run"
         json_data = {
             "client_id": self.__client_id,
-            "scheme": sceme,
+            "scheme": scheme,
             "objectTypeId": type_id,
             "attributes": self.form_attributes(attrs),
         }
