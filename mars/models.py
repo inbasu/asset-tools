@@ -37,14 +37,16 @@ class InsightEntity(models.Model):
         return self.decode(MARS.create_run(type_id=self.type_id, scheme=self.scheme, attrs=data))
 
     def search_object(self, iql, results=500) -> list[dict]:
-        return self.decode(MARS.iql_run(iql=iql, scheme=self.scheme, results=results))
+        return [
+            self.decode(item) for item in MARS.iql_run(iql=iql, scheme=self.scheme, results=results)["objectEntries"]
+        ]
 
     def update_object(self, dict) -> dict:
         return self.decode(MARS.update_run())
 
     def decode(self, item) -> dict:
         result = {}
-        for attr in item["objectEntries"]["attributes"]:
+        for attr in item["attributes"]:
             key = self.props.objects.get(attr["objectAttributeId"])
             value = None
             for data in attr["objectAttributeValues"]:

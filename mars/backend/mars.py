@@ -58,7 +58,7 @@ class Mars:
     I hardcode every method just becoze!"""
 
     @status_code
-    def iql_run(self, iql, scheme, results=1000, deep=1, include_attributes=False):
+    def iql_run(self, iql, scheme, results=1000, deep=1, include_attributes=True):
         url = self.URL + "/iql/run"
         json_data = {
             "iql": iql,
