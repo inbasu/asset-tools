@@ -12,7 +12,7 @@ class Mars:
         self.__token = token
         self.__client_id = client_id
         self.session = self.create_session()
-        self.update_token()
+        self.__update_token()
 
     def create_session(self) -> requests.Session:
         session = requests.Session()  # here i try to back to session
