@@ -4,8 +4,8 @@ import subprocess
 
 from django.db import models
 
-HOST = ""
-PORT = 9100
+from mars.models import InsightEntity
+from core.settings import PRINTSERVER_HOST, PRINT_PORT
 
 
 # Create your models here.
@@ -26,11 +26,11 @@ class Printer(models.Model):
         """Windos only metod wil fail on *nix"""
         args = ["ping", "-n", "1", self.ip]
         stdout: str = subprocess.run(args, capture_output=True).stdout.decode("cp437", "ignore")
-        return not bool("100% loss" in stdout)
+        return bool("(0% loss)" in stdout)
 
     def print(self, label: str) -> None:
         soc = socket(AF_INET, SOCK_STREAM)
-        soc.connect((self.ip, PORT))
+        soc.connect((self.ip, PRINT_PORT))
         soc.send(bytes(label, encoding="utf-8"))
         soc.close()
 
@@ -40,7 +40,7 @@ class Printer(models.Model):
     def update(cls) -> list:
         updated = set()
         # here we got logic to get label masks
-        masks = {}
+        masks = InsightEntity.objects.get(name="PrinterMask").search_object(iql="")
         for printer in cls.printers_from_host():
             if app := cls.get_app(printer["name"], masks):
                 defaults = {**printer, "app": app, "mask": printer["name"][-4:]}
@@ -54,7 +54,7 @@ class Printer(models.Model):
     @classmethod
     def printers_from_host(csl) -> list[dict[str:str]]:
         result: list = []
-        args = ["powershel.exe", f"Get-Printers -ComputerName {HOST} | ft name,portname"]
+        args = ["powershell.exe", f"Get-Printers -ComputerName {PRINTSERVER_HOST} | ft name,portname"]
         stdout: str = subprocess.run(args, capture_output=True).stdout.decode("cp437", "ignore")
         # Exaple of stdout sting: "name                    portname(IP) \r\n"
         # Split strings and than split each of them to get listof  tuples [(name, portname(IP))]
@@ -69,7 +69,7 @@ class Printer(models.Model):
     def data_to_dict(cls, fields: tuple[str, str]) -> dict[str:str] | None:
         if len(fields) == 2:
             # with regex check is IP in field[1]
-            posible_ip = re.search(r"((25[0-5]|(2[0-4]|1\d[1-9]|)\d)\.?\b){4}", fields[1])
+            posible_ip = re.search(r"((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}", fields[1])
             if posible_ip:
                 return {
                     "name": fields[0],

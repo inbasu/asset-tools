@@ -57,7 +57,7 @@ class Mars:
     I hardcode every method just becoze!"""
 
     @status_code
-    def iql_run(self, iql, scheme, results=1000, deep=1):
+    def iql_run(self, iql, scheme, results=1000, deep=1, include_attributes=False):
         url = self.URL + "/iql/run"
         json_data = {
             "iql": iql,
@@ -66,7 +66,7 @@ class Mars:
             "options": {
                 "page": 1,  # no need to pagination  just result quantity control
                 "resultsPerPage": results,
-                "includeAttributes": False,
+                "includeAttributes": include_attributes,
                 "includeAppributesDeep": deep,
             },
         }

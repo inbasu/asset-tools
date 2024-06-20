@@ -4,8 +4,9 @@ import unittest
 from django.test import TestCase
 
 from print_service.models import Printer
-
-# TODO: define socket listener for print test
+from mars.models import InsightEntity
+# TODO:
+# [*]define socket listener for print test
 
 
 # Create your tests here.
@@ -14,6 +15,7 @@ class PrinterModelTest(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        InsightEntity.objects.create(name="PrinterMask", scheme=1, type_id=236)
         Printer.objects.create(name="PrinterName", ip="127.0.0.1", app="IT", mask="mask")
         Printer.objects.create(name="PrinterWithBadIP", ip="266.0.0.1", app="Fail", mask="Bad")
         cls.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -36,7 +38,12 @@ class PrinterModelTest(TestCase):
         self.assertEqual(msg, str(data, encoding="utf-8"))
 
     def test_update_printers(self) -> None:
-        self.assertTrue(False)
+        result = Printer.update()
+        self.assertTrue(result)
+        self.asserTrue(isinstance(result, list))
+        self.asserFalse("PrinterName" not in [printer.name for printer in result])
+        self.assertTrue(all([printer.name for printer in result]))
+        self.assertTrue(all([printer.ip for printer in result]))
 
     @classmethod
     def tearDownClass(cls) -> None:
