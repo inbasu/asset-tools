@@ -1,6 +1,7 @@
-import requests
 import json
 import logging
+
+import requests
 
 logger = logging.getLogger()
 
@@ -94,7 +95,7 @@ class Mars:
             "client_id": self.__client_id,
             "scheme": scheme,
             "objectTypeId": type_id,
-            "attributes": self.form_attributes(attrs),
+            "attributes": attrs,
         }
         response = self.session.post(url=url, json=json_data)
         print(response.status_code)

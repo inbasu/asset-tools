@@ -17,16 +17,21 @@ class TestInsightEntity(TestCase):
 
     def test_create_object(self):
         hw = InsightEntity.objects.create(name="Hardware", scheme=10, type_id=155)
-        r = hw.create_object(
+        name = f"test_device #{random.randint(100,1000)}"
+        hw.create_object(
             data={
-                "Name": f"test_device #{random.randint(100,1000)}",
-                "Type": "LAPTOP",
-                "State": "Free",
-                "Model": "Lenovo ThinkPad P17",
-                "Store": "1014",
-                "Location": "EDP Storage",
+                "Name": name,
+                "Type": "INT-381686",  # laptop
+                "State": "INT-383219",  # free
+                "Model": "INT-382527",  # hp elitbook 820 g3
+                "Store": "INT-380820",  # 1014
+                "Location": "INT-381031",  # edp storage
             }
         )
+        crt_hw = hw.search_object(iql=f'"Name" = "{name}"')
+        self.assertTrue(crt_hw)
+        self.assertEqual(crt_hw["Name"], name)
+        self.assertEqual(crt_hw["Store"], str(1014))
 
     def test_search_object(self):
         InsightEntity.objects.create(name="PrinterMask", scheme=1, type_id=236)

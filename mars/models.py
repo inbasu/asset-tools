@@ -34,11 +34,14 @@ class InsightEntity(models.Model):
     objects = InsightEntityManager()
 
     def create_object(self, data: dict) -> dict:
-        return self.decode(MARS.create_run(type_id=self.type_id, scheme=self.scheme, attrs=self.encode(data)))
+        """MARS API create dosn't back arrts-values like others metods"""
+        return MARS.create_run(type_id=self.type_id, scheme=self.scheme, attrs=self.encode(data))
 
     def search_object(self, iql, results=500) -> list[dict]:
         iql = iql + f' AND objectType = "{self.name}"' if iql else f'objectType = "{self.name}"'
-        return [self.decode(item) for item in MARS.iql_run(iql=iql, scheme=self.scheme, results=results)]
+        return [
+            self.decode(item) for item in MARS.iql_run(iql=iql, scheme=self.scheme, results=results)["objectEntries"]
+        ]
 
     def update_object(self, object_id: int, arrts: dict) -> dict:
         return self.decode(
@@ -78,7 +81,11 @@ class InsightEntity(models.Model):
                 )
         return result
 
-        return {self.props.get(name=key).attr_id: value for key, value in item.items()}
+    # def get_ref_key(self, prop, value) -> str:
+    #     result = prop.referenced.search_object(iql=f'"Name" = "{value}"', results=1, include_attributes=False)
+    #     if result:
+    #         return result[0]["Key"]
+    #     return None
 
 
 class Property(models.Model):
@@ -86,3 +93,4 @@ class Property(models.Model):
 
     attr_id = models.IntegerField(null=False, blank=False)
     name = models.CharField(max_length=32, null=False, blank=False)
+    # referenced = models.ForeignKey(to=InsightEntity, on_delete=models.CASCADE)
