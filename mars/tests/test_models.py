@@ -16,7 +16,17 @@ class TestInsightEntity(TestCase):
         pass
 
     def test_create_object(self):
-        pass
+        hw = InsightEntity.objects.create(name="Hardware", scheme=10, type_id=155)
+        r = hw.create_object(
+            data={
+                "Name": f"test_device #{random.randint(100,1000)}",
+                "Type": "LAPTOP",
+                "State": "Free",
+                "Model": "Lenovo ThinkPad P17",
+                "Store": "1014",
+                "Location": "EDP Storage",
+            }
+        )
 
     def test_search_object(self):
         InsightEntity.objects.create(name="PrinterMask", scheme=1, type_id=236)
@@ -27,10 +37,10 @@ class TestInsightEntity(TestCase):
 
     def test_update_object(self):
         hw = InsightEntity.objects.create(name="Hardware", scheme=10, type_id=155)
-        test_laptop = hw.search_object(iql='"INV No" = 800800')
-        new_sn = f"ABCDE{random.randint(10000, 99999)}"
-        hw.update_object(id=test_laptop["Key"], arrts={"Serial No": new_sn})
-        upd_test_laptop = hw.search_object(iql='"INV No" = 800800')
+        test_laptop = hw.search_object(iql='"INV No" = 800800')[0]
+        new_sn = f"ABCDE{random.randint(100000, 999999)}"
+        hw.update_object(object_id=test_laptop["Key"], arrts={"Serial No": new_sn})
+        upd_test_laptop = hw.search_object(iql='"INV No" = 800800')[0]
         self.assertNotEqual(test_laptop, upd_test_laptop)
         self.assertEqual(upd_test_laptop["Serial No"], new_sn)
 

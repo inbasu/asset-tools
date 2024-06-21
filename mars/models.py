@@ -34,13 +34,11 @@ class InsightEntity(models.Model):
     objects = InsightEntityManager()
 
     def create_object(self, data: dict) -> dict:
-        return self.decode(MARS.create_run(type_id=self.type_id, scheme=self.scheme, attrs=data))
+        return self.decode(MARS.create_run(type_id=self.type_id, scheme=self.scheme, attrs=self.encode(data)))
 
     def search_object(self, iql, results=500) -> list[dict]:
         iql = iql + f' AND objectType = "{self.name}"' if iql else f'objectType = "{self.name}"'
-        return [
-            self.decode(item) for item in MARS.iql_run(iql=iql, scheme=self.scheme, results=results)["objectEntries"]
-        ]
+        return [self.decode(item) for item in MARS.iql_run(iql=iql, scheme=self.scheme, results=results)]
 
     def update_object(self, object_id: int, arrts: dict) -> dict:
         return self.decode(

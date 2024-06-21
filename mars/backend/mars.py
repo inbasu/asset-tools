@@ -76,10 +76,10 @@ class Mars:
 
     @status_code
     def update_run(self, object_id, type_id, scheme, attrs):
-        url = self.URl + "/update/run"
+        url = self.URL + "/update/run"
         json_data = {
             "client_id": self.__client_id,
-            "objectID": object_id,
+            "objectId": object_id,
             "scheme": scheme,
             "objectTypeId": type_id,
             "attributes": attrs,
@@ -97,6 +97,8 @@ class Mars:
             "attributes": self.form_attributes(attrs),
         }
         response = self.session.post(url=url, json=json_data)
+        print(response.status_code)
+        print(response.json())
         return response
 
     def objects_run(self):
