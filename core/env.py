@@ -15,3 +15,6 @@ mars_connection = Mars(
     token=os.getenv("MARS_TOKEN"),
     client_id=os.getenv("MARS_CLIENT_ID"),
 )
+
+
+# IDAM create in users.IDAM coz it usless outside of aplication

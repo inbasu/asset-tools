@@ -1,14 +1,16 @@
 from django.views.generic import TemplateView
 
+from users.IDAM import IDAMMixin
+
 
 # Create your views here.
-class IndexView(TemplateView):
+class IndexView(IDAMMixin, TemplateView):
     template_name = "index.html"
 
 
-class MobileView(TemplateView):
+class MobileView(IDAMMixin, TemplateView):
     template_name = "index.html"
 
 
-class PrintersView(TemplateView):
+class PrintersView(IDAMMixin, TemplateView):
     template_name = "index.html"

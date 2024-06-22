@@ -1,7 +1,6 @@
 from django.urls import path
 
-from web.views import IndexView, PrinterView, MobileView
-
+from web.views import IndexView, MobileView, PrinterView
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
