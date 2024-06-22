@@ -10,5 +10,5 @@ class MobileView(TemplateView):
     template_name = "index.html"
 
 
-class PrinterView(TemplateView):
+class PrintersView(TemplateView):
     template_name = "index.html"

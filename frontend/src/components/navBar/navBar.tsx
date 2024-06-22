@@ -1,37 +1,71 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { UserContext, user } from '../../App';
 import { Link } from 'react-router-dom';
 
 // MUI imports
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
+import logo from '../../assets/logo.svg';
 
-
-
+// Управление материальными активами компании
 
 
  export default function Navbar() {
-     const user = useContext<user>(UserContext);
-  return (
-    <AppBar position="static" style={{height: "4vh", backgroundColor:"#002D72"}}>
-      <Container >
-              <Toolbar disableGutters>
-
-            <Link to="/" >
-                <h1>go home</h1>
-            </Link>
-                    <Typography variant="subtitle1" gutterBottom style={{fontSize: "1.3vh"}}>
-                {user.username}
-            </Typography>
-                {(user.store_role.length > 0) ? // check user stores if exist
-                    <Typography variant="subtitle2" display="block" gutterBottom>
-                            ТЦ:({user.store_role.join(',')})
+   const user = useContext<user>(UserContext);
+   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+   const open = Boolean(anchorEl);
+   const [openTooltip, setOpen] = useState(false);
+   
+   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+   };
+   
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+   
+    const handleTooltipOpen = () => {
+      setOpen(true);
+    };
+     return (
+      <AppBar position="static" sx={{backgroundColor:"#003B7E", height: "4vh"}}>
+        <Toolbar variant="dense" sx={{ flexGrow: 1, padding: 0, height: "4vh"}}>
+                <Link to="/">
+             <img src={logo} alt="Metro" style={{height: "4vh", maxHeight: "4vh", position: 'absolute', left:'0vw', top: '0'}} />
+                  <Typography display="block" variant="caption" noWrap={ true }  fontSize={"1.6vh"} sx={{maxHeight: "4vh", position:"absolute", top: "0.65vh", left:"4.6vh" , color:"white", overflowX: 'hidden'}} gutterBottom>
+                      Управление материальными активами компании
+                  </Typography>
+                </Link>
+                <div onClick={handleClick} style={{height: "5vh",  position: 'absolute', right:'0.3vw', top: '0' ,textAlign: 'right'}} >
+                    <Typography variant="subtitle2" gutterBottom m={0} fontSize={"1.3vh"}>
+                        <b>{user.username}</b>
                     </Typography>
-                    : <p></p>}
+                    <Typography variant="caption" display="block" m={0} fontSize={"1vh"} gutterBottom>
+                        {(user.store_role.length)? <i>ТЦ:({user.store_role.join(', ')})</i>:<i> </i>}
+                    </Typography>
+                  </div>
+                  <Menu
+                      sx={{ mt: 0, mr: 0, p: 0, borderRadius: 0 }}
+                      id="menu-navbar"
+                      anchorEl={anchorEl}
+                      keepMounted      
+                      open={open}
+                      onClose={handleClose}
+                      TransitionComponent={Fade}>
+                      <MenuItem  onClick={handleTooltipOpen}>
+                        <Typography variant="caption" textAlign="right" fontSize={"1.2vh"}>Roles</Typography>
+                      </MenuItem>
+                      <MenuItem onClick={() => { location.href = "/auth/logout" }}>
+                        <Typography variant="caption" textAlign="right" fontSize={"1.2vh"}>Logout</Typography>
+                      </MenuItem>
+                    </Menu>
         </Toolbar>
-      </Container>
-    </AppBar>
+      </AppBar>
   );
 }
+
+

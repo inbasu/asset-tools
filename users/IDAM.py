@@ -1,5 +1,15 @@
+from dataclasses import dataclass
+
 import jwt
 import requests
+
+
+@dataclass
+class User:
+    username: str
+    email: str
+    roles: list[str]
+    store_role: list
 
 
 class IDAM:
@@ -33,7 +43,7 @@ class IDAM:
     def decode_token(self, token: str) -> dict:
         return jwt.decode(token, algorithms="HS256", options={"verify_signature": False})
 
-    def form_user_data(self, token_data) -> dict:
-        user_info = {"roles": []}
+    def form_user_data(self, token_data) -> User:
+        user = User()
 
-        return user_info
+        return user

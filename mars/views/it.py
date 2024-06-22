@@ -3,7 +3,7 @@ from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 
 from mars.models import InsightEntity
-from mars.premissions import ItUserPermission
+from users.permissions import IsITMixin
 
 
 # Create your views here.
