@@ -2,7 +2,7 @@ from django.core.exceptions import PermissionDenied
 from rest_framework import BasePermission
 
 
-# Permission classe
+# Permission classe for API
 class ItUserPermission(BasePermission):
     message = "IT roles only"
     roles = {}
@@ -20,7 +20,7 @@ class UserWithStorePermission(BasePermission):
         return bool(user) and bool([role for role in user["store_role"]])
 
 
-#  Methods mixins
+#  Methods mixins for standart views
 class IsUserMixin:
     def dispatch(self, request):
         if user := request.session.get("user", False):
