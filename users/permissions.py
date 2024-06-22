@@ -1,5 +1,5 @@
 from django.core.exceptions import PermissionDenied
-from rest
+from rest_framework import BasePermission
 
 
 # Permission classe
