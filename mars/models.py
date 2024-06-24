@@ -23,11 +23,17 @@ class InsightEntityManager(models.Manager):
         return []
 
 
+class PropertyModelManager(models.Manager):
+    """redifue create with relatedfield"""
+
+    pass
+
+
 # Create your models here.
 class InsightEntity(models.Model):
     name = models.CharField(max_length=32, null=False, blank=False)
     scheme = models.IntegerField(null=False, blank=False)
-    type_id = models.IntegerField(null=False, blank=False)
+    type_id = models.IntegerField(null=False, blank=False, unique=True)
     props = models.ManyToManyField(to="Property")
     # permissions = models.ManyToManyField(to="permission")
 
@@ -89,8 +95,6 @@ class InsightEntity(models.Model):
 
 
 class Property(models.Model):
-    """attr_id isn't unique coz in different scemas it can be reused"""
-
-    attr_id = models.IntegerField(null=False, blank=False)
+    attr_id = models.IntegerField(null=False, blank=False, unique=True)
     name = models.CharField(max_length=32, null=False, blank=False)
-    # referenced = models.ForeignKey(to=InsightEntity, on_delete=models.CASCADE)
+    referenced = models.ForeignKey(to=InsightEntity, on_delete=models.CASCADE, null=True, blank=True)

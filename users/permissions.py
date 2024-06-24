@@ -12,16 +12,16 @@ class ItUserPermission(BasePermission):
     }
 
     def has_permission(self, request, view) -> bool:
-        user = request.session.get("user", False)
-        return bool(user) and bool([role for role in user["roles"] if role in self.roles])
+        if user := request.session.get("user", False):
+            return bool(user) and bool([role for role in user["roles"] if role in self.roles])
 
 
-class UserWithStorePermission(BasePermission):
+class UserPermission(BasePermission):
     message = "With store assigned only"
 
-    def has_permission(self, request, view):
-        user = request.session.get("user", False)
-        return bool(user) and bool([role for role in user["store_role"]])
+    def has_permission(self, request, view) -> bool:
+        if user := request.session.get("user", False):
+            return bool(user) and bool([role for role in user["store_role"]])
 
 
 #  Methods mixins for standart views
@@ -50,4 +50,4 @@ class IsInventAdminAdminMixin:
         roles = {}
         if user := request.session.get("user", False):
             return bool(set(user["roles"]) & roles)
-        return PermissionDenied("No, you are not Invent admin")
+        return PermissionDenied("No, you are not Inventadmin")

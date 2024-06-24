@@ -1,20 +1,23 @@
 from django.views.generic import TemplateView
-from users.IDAM import IDAMMixin
+from users.IDAM import IDAMAuthMixin
 from users.permissions import IsUserMixin, IsITMixin
 
 
 # Create your views here.
-class IndexView(IDAMMixin, IsUserMixin, TemplateView):
+class IndexView(IDAMAuthMixin, IsUserMixin, TemplateView):
     template_name = "index.html"
 
 
-class MobileView(IDAMMixin, TemplateView):
+class MobileView(IDAMAuthMixin, TemplateView):
     template_name = "index.html"
 
 
-class ITInventView(IDAMMixin, IsITMixin, TemplateView):
+class ITInventView(IDAMAuthMixin, IsITMixin, TemplateView):
     template_name = "index.html"
 
 
-class PrintersView(IDAMMixin, TemplateView):
+class PrintersView(IDAMAuthMixin, TemplateView):
     template_name = "index.html"
+
+
+# Error pages

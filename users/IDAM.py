@@ -3,7 +3,7 @@ import requests
 from django.shortcuts import redirect
 
 
-class IDAMMixin:
+class IDAMAuthMixin:
     """Main auth mixin must be run first of all mixins"""
 
     def dispatch(self, request, *args, **kwargs):
@@ -15,7 +15,7 @@ class IDAMMixin:
             url = request.session.pop("redirect")
             redirect(url)
         else:
-            request.session["redirect"] = "url"
+            request.session["redirect"] = request.get_full_path()
             redirect(IDAM.code_url)
 
 
@@ -42,7 +42,9 @@ class IDAM:
     def get_token_with_code(cls, code, **kwargs):
         url = f"{cls.url}/authorize/api/oauth2/access_token"
         data = {"grant_type": "authoriztion_code", "code": code, **cls.data, **kwargs}
-        response = requests.post(url=url, auth=(), data=data)
+        response = requests.post(
+            url=url, auth=requests.auth.HTTPBasicAuth(cls.__client_id, cls.__client_secret), data=data
+        )
         if token := response.json().get("access_token"):
             return token
 
@@ -63,8 +65,8 @@ class IDAM:
             user["roles"].extend(set(role.keys()) & cls.ROLES)
 
             # get stores from token
-            if "MCC_INSIGHT_STORE_ROLE" in role:
-                user["store_role"] = cls.get_user_stores(role["MCC_INSIGHT_STORE_ROLE"])
+            if "MCC_RU_INSIGHT_STORE_ROLE" in role:
+                user["store_role"] = cls.get_user_stores(role["MCC_RU_INSIGHT_STORE_ROLE"])
         return user
 
     @classmethod
