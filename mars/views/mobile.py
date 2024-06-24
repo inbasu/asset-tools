@@ -23,3 +23,13 @@ class BaseView(APIView, ABC):
 class GiveawayView(BaseView):
     def post(self, request):
         return Response({})
+
+
+class TakeBackView(BaseView):
+    def post(self, request):
+        return Response({})
+
+
+class SendView(BaseView):
+    def post(self, request):
+        return Response({})

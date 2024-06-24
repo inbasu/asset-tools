@@ -1,10 +1,8 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-
 from django.views.generic import TemplateView
-
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.views import APIView
 
 from print_service.models import Printer
 from print_service.serializers import PrinterSerializer
@@ -25,6 +23,8 @@ class PrinterListView(APIView):
 
 
 class PrinterRunView(APIView):
+    """note that now we print less then 30 lables"""
+
     renderer_classes = [JSONRenderer]
     http_method_names = ["post"]
 
@@ -32,13 +32,17 @@ class PrinterRunView(APIView):
         printer = request.data.get("PrinterName", "")
         data = request.data.get("data", "")
         try:
-            Printer.objects.get(name=printer).print(data)
-            """ TODO: Here  we got item data and print in with celery  
-                Printer can have only 30 labels in queue
-                Split items by 30 in task and send it with deley"""
+            printer = Printer.objects.get(name=printer).print(data)
+            if not printer.online():
+                raise Exception("Printer offline")
+            labels = []
+
+            # TODO: celery task
+            for label in labels:
+                printer.print(label)
             return Response({}, status=HTTP_200_OK)
-        except Exception:
-            return Response({}, status=HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"err": e}, status=HTTP_400_BAD_REQUEST)
 
 
 class PrinterUpdate(APIView):

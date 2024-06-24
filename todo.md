@@ -9,21 +9,30 @@
 ##### PROI 2:
 
 [] Create HTML => PDF blanks;  
-[PENDING] MARS tests;  
-[PENDING] Printers test;
+
 
 ##### PRIO 3:
 
 [] Make key free update\create insightentity methods;  
 [] Auto test everythig;  
-[] Func test apps;
+[] Func test apps;  
+[] Reform user-dict to dataclass;  
+
+
+
 
 #### FIXME:
 
 [] Move env to logic based app\
 
 #### SPRINT:
+
 []
+
+#### TESTS:
+[DONE] URL test;  
+[PENDING] MARS tests;  
+[PENDING] Printers test;
 
 #### DONE: 
 

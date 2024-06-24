@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from mars.models import InsightEntity
 from users.permissions import ItUserPermission
 
+""" It's calles it.py coz of permissions not app based """
+
 
 # Create your views here.
 class IQLRunView(APIView):

@@ -1,11 +1,15 @@
 from django.core.exceptions import PermissionDenied
-from rest_framework import BasePermission
+from rest_framework.permissions import BasePermission
+
+# from users.IDAM import User
 
 
 # Permission classe for API
 class ItUserPermission(BasePermission):
     message = "IT roles only"
-    roles = {}
+    roles = {
+        "MCC_RU_INSIGHT_IT_ROLE",
+    }
 
     def has_permission(self, request, view) -> bool:
         user = request.session.get("user", False)
@@ -22,17 +26,22 @@ class UserWithStorePermission(BasePermission):
 
 #  Methods mixins for standart views
 class IsUserMixin:
-    def dispatch(self, request):
+    def dispatch(self, request, *args, **kwargs):
         if user := request.session.get("user", False):
-            return bool(user.roles) or bool(user.store_role)
+            if user["store_role"] or user["roles"]:
+                return super().dispatch(request, *args, **kwargs)
         return PermissionDenied("Who are you")
 
 
 class IsITMixin:
-    def dispatch(self, request):
-        roles = {}
+    roles = {
+        "MCC_RU_INSIGHT_IT_ROLE",
+    }
+
+    def dispatch(self, request, *args, **kwargs):
         if user := request.session.get("user", False):
-            return bool(set(user.roles) & roles)
+            if set(user["roles"]) & self.roles:
+                return super().dispatch(request, *args, **kwargs)
         return PermissionDenied("No, you are not IT")
 
 
@@ -40,5 +49,5 @@ class IsInventAdminAdminMixin:
     def dispatch(self, request):
         roles = {}
         if user := request.session.get("user", False):
-            return bool(set(user.roles) & roles)
+            return bool(set(user["roles"]) & roles)
         return PermissionDenied("No, you are not Invent admin")

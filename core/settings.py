@@ -31,11 +31,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    # User apps
-    "download",
+    # Created apps
     "mars",
     "print_service",
     "users",
+    "utils",
     "web",
 ]
 
@@ -126,4 +126,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+
+# Session config
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
