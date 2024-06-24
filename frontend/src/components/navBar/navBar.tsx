@@ -33,7 +33,7 @@ import logo from '../../assets/logo.svg';
         <Toolbar variant="dense" sx={{ flexGrow: 1, padding: 0, height: "4vh"}}>
                 <Link to="/">
              <img src={logo} alt="Metro" style={{height: "4vh", maxHeight: "4vh", position: 'absolute', left:'0vw', top: '0'}} />
-                  <Typography display="block" variant="caption" noWrap={ true }  fontSize={"1.6vh"} sx={{maxHeight: "4vh", position:"absolute", top: "0.65vh", left:"4.6vh" , color:"white", overflowX: 'hidden'}} gutterBottom>
+                  <Typography display="block" variant="caption" noWrap={ true }  fontSize={"1.6vh"} sx={{height: "4vh", position:"absolute", top: 0, paddingLeft:"5vh", paddingTop:"0.65vh" , color:"white", overflowX: 'hidden'}} gutterBottom>
                       Управление материальными активами компании
                   </Typography>
                 </Link>
