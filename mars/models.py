@@ -19,14 +19,28 @@ class InsightEntityManager(models.Manager):
 
     def get_entity_props(self, iql_response) -> list:
         if fields := iql_response.get("objectTypeAttributes", {}):
-            return [Property.objects.create(attr_id=attr["id"], name=attr["name"]) for attr in fields]
+            return [
+                Property.objects.create(
+                    attr_id=attr["id"], name=attr["name"], referenced=attr.get("referencedObjectType", None)
+                )
+                for attr in fields
+            ]
         return []
 
 
 class PropertyModelManager(models.Manager):
     """redifue create with relatedfield"""
 
-    pass
+    def create(self, attr_id, name, referenced, *args, **kwargs):
+        instance = super().create(attr_id, name, **obj_data)
+        if referenced is not None:
+            instance.referenced = InsightEntity.objects.get_or_create(
+                name=referenced["name"],
+                scheme=referenced["objectSchemaId"],
+                type_id=referenced["id"],
+            )
+        instance.save()
+        return instance
 
 
 # Create your models here.

@@ -9,6 +9,8 @@
 ##### PROI 2:
 
 [] Create HTML => PDF blanks;  
+[] IT invent;  
+[] Mobile invent;  
 
 
 ##### PRIO 3:
@@ -27,7 +29,7 @@
 
 #### SPRINT:
 
-[]
+[24.06] HTML => PDF
 
 #### TESTS:
 [DONE] URL test;  
