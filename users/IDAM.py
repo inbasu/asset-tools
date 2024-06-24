@@ -29,9 +29,10 @@ class User:
 class IDAMMixin:
     """Main auth mixin must be run first of all mixins"""
 
-    def dispatch(self, request):
-        if request.session["user"]:
-            return super().dispatch(self, request)
+    def dispatch(self, request, *args, **kwargs):
+        if request.session.get("user", None):
+            print(123)
+            return super().dispatch(request, *args, **kwargs)
         if request.GET.get("code", None):
             token = IDAM.get_token_with_code()
             request.session["user"] = IDAM.form_user_data(token)

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
@@ -18,7 +19,6 @@ import logo from '../../assets/logo.svg';
    const user = useContext<user>(UserContext);
    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
    const open = Boolean(anchorEl);
-   const [openTooltip, setOpen] = useState(false);
    
    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -27,10 +27,7 @@ import logo from '../../assets/logo.svg';
     const handleClose = () => {
       setAnchorEl(null);
     };
-   
-    const handleTooltipOpen = () => {
-      setOpen(true);
-    };
+
      return (
       <AppBar position="static" sx={{backgroundColor:"#003B7E", height: "4vh"}}>
         <Toolbar variant="dense" sx={{ flexGrow: 1, padding: 0, height: "4vh"}}>
@@ -56,8 +53,11 @@ import logo from '../../assets/logo.svg';
                       open={open}
                       onClose={handleClose}
                       TransitionComponent={Fade}>
-                      <MenuItem  onClick={handleTooltipOpen}>
-                        <Typography variant="caption" textAlign="right" fontSize={"1.2vh"}>Roles</Typography>
+                  <MenuItem>
+                  <Tooltip title={<div style={{ whiteSpace: 'pre-line' }}>{user.roles.join("\n")}</div>} placement="left-start">
+                    <Typography variant="caption" textAlign="right" fontSize={"1.2vh"}>Roles</Typography>
+                  </Tooltip>
+
                       </MenuItem>
                       <MenuItem onClick={() => { location.href = "/auth/logout" }}>
                         <Typography variant="caption" textAlign="right" fontSize={"1.2vh"}>Logout</Typography>
@@ -67,5 +67,6 @@ import logo from '../../assets/logo.svg';
       </AppBar>
   );
 }
+
 
 

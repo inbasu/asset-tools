@@ -14,7 +14,7 @@ export interface user {
 export const UserContext = createContext<user>({
   username: 'ivan.fisenko',
   email: '',
-  roles: ['one', 'two'],
+  roles: ['MCC_RUINSIGHT_IT_ROLE', 'MCC_RU_INSIGHT_QA_ROLE', 'MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE'],
   store_role: [1012, 1014],
 });
 
@@ -24,7 +24,7 @@ function App() {
   const user = {
     username: 'ivan.fisenko',
     email: '',
-    roles: ['one', 'two'],
+    roles: ['MCC_RUINSIGHT_IT_ROLE', 'MCC_RU_INSIGHT_QA_ROLE', 'MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE'],
     store_role: [1012, 1014],
   };
 
