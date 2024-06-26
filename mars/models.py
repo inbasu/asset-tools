@@ -31,7 +31,7 @@ class InsightEntityManager(models.Manager):
 class PropertyModelManager(models.Manager):
     """redifue create with relatedfield"""
 
-    def create(self, attr_id, name, referenced, *args, **kwargs):
+    def create(self, attr_id, name, referenced, **obj_data):
         instance = super().create(attr_id, name, **obj_data)
         if referenced is not None:
             instance.referenced = InsightEntity.objects.get_or_create(

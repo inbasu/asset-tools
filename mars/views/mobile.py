@@ -10,10 +10,6 @@ class BaseView(APIView, ABC):
     item_types = []
 
     def form_iql(self, request) -> str:
-        iql = request.data.get("iql", "")
-        types = f" IN ({",".join(self.item_types)})"
-        stores = ""
-
         return ""
 
     @abstractmethod
