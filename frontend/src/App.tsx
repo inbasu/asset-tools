@@ -1,6 +1,6 @@
-
+import axios from "axios";
 import Router from "./router"
-import { createContext } from "react"
+import { createContext, useEffect, useState } from "react"
 
 
 export interface user {
@@ -10,28 +10,39 @@ export interface user {
   store_role: Array<string>,
 }
 
-// Get user once and sharre it across app
-export const UserContext = createContext<user>({
-  username: 'ivan.fisenko',
+const baseUser: user = {
+  username: '',
   email: '',
-  roles: ['MCC_RUINSIGHT_IT_ROLE', 'MCC_RU_INSIGHT_QA_ROLE', 'MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE'],
-  store_role: ["1012", "1014"],
-});
+  roles: [],
+  store_role: [],
+}
+// Get user once and sharre it across app
+export const UserContext = createContext<user>(baseUser);
+
+const getUser = async () => {
+  try {
+    const responce = await axios.get('/auth/whoami/')
+    return responce.data
+  } catch (error) {console.log(error)}
+}
 
 
 
 function App() {
-  const user = {
-    username: 'ivan.fisenko',
-    email: '',
-    roles: ['MCC_RUINSIGHT_IT_ROLE', 'MCC_RU_INSIGHT_QA_ROLE', 'MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE'],
-    store_role: ["1012", "1014"],
-  };
+  
+  const [user, setUser] = useState<user|undefined>();
+
+  useEffect(() => {
+    (async () => {
+      const tmp: user = await getUser()
+      setUser(tmp)
+    })()
+  }, [])
 
 
   return (
     <>
-      {(user !== null) && 
+      {(user) && 
         <UserContext.Provider value={user}>
           <Router />
         </UserContext.Provider>
