@@ -1,9 +1,9 @@
 import { useEffect,  useState, Fragment, ChangeEvent } from "react";
 // import { UserContext, user } from "../App";
 // import axios from "axios";
-import CircularSpinner from "../components/spinner";
-import { Invent, Item, Report, reports, filters } from "../components/it-invent/data";
-import { test_items } from "../components/it-invent/test";
+import CircularSpinner from "../../components/spinner";
+import { Invent, Item, Report, reports, filters } from "./data";
+import { test_items } from "./test";
 // MUI
 import Box from '@mui/material/Box';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -19,7 +19,7 @@ import Checkbox from '@mui/material/Checkbox';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TableViewIcon from '@mui/icons-material/TableView';
 import CloseIcon from '@mui/icons-material/Close';
-import ItemsTable from "../components/it-invent/table";
+import ItemsTable from "./table";
 
 
 

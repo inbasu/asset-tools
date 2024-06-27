@@ -1,14 +1,13 @@
 import { useEffect, useContext, useState } from "react"
-import { UserContext, user } from "../App";
-import { MenuButton, mBtn } from '../components/index/button'
-import { checkPermission, permissions } from "../permissions";
+import { UserContext, user } from "../../App";
+import { MenuButton, mBtn } from './button'
+import { checkPermission, permissions } from "../../permissions";
 
 import Box from '@mui/material/Box';
 import { useSearchParams } from "react-router-dom";
 
-
+// define buttons and there viasability permission here
 const mainButtons: Array<mBtn> = [
-
     { text: "Учет мобильного оборудования", roles: [], type: "href", to: '/mobile' },
     { text: "Учет IT оборудования", roles: permissions.ItInvent, type: "link", to:'/?p=it'},
     { text: "In development", roles: ["MCC_RU_INSIGHT_QA_ROLE"], type: 'link', to:'/?p=dev'}
@@ -32,6 +31,7 @@ export default function Index() {
     const [subPage, setSubPage] = useState<string | null>(null);
     const [params, _]= useSearchParams();
 
+    // buttons to url placement
     const getPage = (addr: string | null) => {
         if (addr == "dev" && checkPermission(user, ["MCC_RU_INSIGHT_QA_ROLE"])) {
             return (getButtons('dev'))}
@@ -62,6 +62,7 @@ export default function Index() {
             }
         })
     }
+
     useEffect(() => {
         document.title = "Asset-tools"
         setSubPage(params.get('p'))

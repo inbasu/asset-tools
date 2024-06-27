@@ -1,7 +1,7 @@
 import axios from "axios";
 import Router from "./router"
 import { createContext, useEffect, useState } from "react"
-
+import CircularSpinner from "./components/spinner";
 
 export interface user {
   username: string,
@@ -29,19 +29,22 @@ const getUser = async () => {
 
 
 function App() {
-  
+  const [loading, setLoading] = useState(false); 
   const [user, setUser] = useState<user|undefined>();
 
   useEffect(() => {
+    setLoading(true);
     (async () => {
       const tmp: user = await getUser()
       setUser(tmp)
     })()
+    setLoading(false)
   }, [])
 
 
   return (
     <>
+      {loading && <CircularSpinner /> }
       {(user) && 
         <UserContext.Provider value={user}>
           <Router />

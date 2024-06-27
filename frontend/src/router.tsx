@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./components/navBar/navBar"
-import Index from "./pages";
-import Mobile from "./pages/mobile";
-import ItInvent from "./pages/it-invent";
+import Navbar from "./components/navBar"
+import Index from "./pages/index";
+import Mobile from "./pages/mobile/mobile";
+import ItInvent from "./pages/it-invent/it-invent";
 import { UserContext, user } from "./App";
 import { useContext } from "react";
 import { checkPermission, permissions } from "./permissions";

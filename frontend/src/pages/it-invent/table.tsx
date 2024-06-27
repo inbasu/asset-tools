@@ -1,6 +1,6 @@
 import { useEffect, useState, ChangeEvent} from 'react';
 import { Item, Report } from './data';
-import CircularSpinner from '../spinner';
+import CircularSpinner from '../../components/spinner';
 // MUI
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
