@@ -9,10 +9,12 @@ export interface mBtn {
     roles: Array<string>;
 }
 
+type Props = {
+    button: mBtn;
+}
 
 
-
-export  function MenuButton({button}) {
+export  function MenuButton({button}: Props) {
     if (button.type === "link") {
         return (
         <Link to={button.to}>

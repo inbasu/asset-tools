@@ -1,8 +1,8 @@
-import { useEffect, useContext, useState, Fragment, ChangeEvent } from "react";
-import { UserContext, user } from "../App";
-import axios from "axios";
+import { useEffect,  useState, Fragment, ChangeEvent } from "react";
+// import { UserContext, user } from "../App";
+// import axios from "axios";
 import CircularSpinner from "../components/spinner";
-import { Invent, Item, reports, filters } from "../components/it-invent/data";
+import { Invent, Item, Report, reports, filters } from "../components/it-invent/data";
 import { test_items } from "../components/it-invent/test";
 // MUI
 import Box from '@mui/material/Box';
@@ -32,7 +32,7 @@ const invs: Array<Invent> = [
 
 
 export default function ItInvent() {
-    const user = useContext<user>(UserContext);
+    // const user = useContext<user>(UserContext);
     const [load, setLoad] =  useState<Boolean>(false);
     const [invents, setInvents] = useState<Array<Invent>>([]);
     const [inventory, setInventory] = useState<Invent>();
@@ -40,8 +40,8 @@ export default function ItInvent() {
     const [shownItems, setShown] = useState<Array<Item>>([]);
     const [showFilter, setShowFilters] = useState<Boolean>(false);
     const [fields, setFields] = useState<Map<string, boolean>>(filters);
-    const [report, setReport] = useState(reports[0]);
-    const [toPrint, setToPrint] = useState<Array<Item>>([]);
+    const [report, setReport] = useState<Report>(reports[0]);
+    // const [toPrint, setToPrint] = useState<Array<Item>>([]);
 
     // states
     const handleSelectInvent = (event: SelectChangeEvent<string|null>) => {

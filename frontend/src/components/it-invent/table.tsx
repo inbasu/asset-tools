@@ -1,5 +1,5 @@
 import { useEffect, useState, ChangeEvent} from 'react';
-import { Item } from './data';
+import { Item, Report } from './data';
 import CircularSpinner from '../spinner';
 // MUI
 import Table from '@mui/material/Table';
@@ -16,28 +16,33 @@ import Box from '@mui/material/Box';
 
 
 
-const filterItems = (items: Array<Item>, filter: Map<string, Array<string>>): Array<Item> => {
-    if (items && filter && filter.size) {
+const filterItems = (items: Array<Item>, filter?: Map<string, Array<string>>): Array<Item> => {
+    if (items && filter &&  filter.size) {
         // yeah this is unreadable but inline
         // that is prefere coz of productivity
         return  items.filter((item: Item) => {
-            return ([...filter.keys()]).map((key: string) => {
-                return filter.get(key).some((attr) => {
+            return ([...filter]).map((one) => {
+                return (one[1]).some((attr: string) => {
                     if (attr === "?") { return true }
-                    else { return (item[key].toLowerCase()).includes(attr.toLowerCase()) }
+                    else { return (item[one[0]].toLowerCase()).includes(attr.toLowerCase()) }
                 })
             }).every((condi) => condi);
         })}
     return items
 };
-
-export default function ItemsTable({ parent_items, fields, report }) {
+type Props = {
+    parent_items: Array<Item>;
+    fields: Map<string, boolean>;
+    report: Report;
+}
+export default function ItemsTable({ parent_items, fields, report }: Props) {
+    console.log(report)
     const [items, setItems] = useState<Array<Item>>(parent_items);
     const [filter, setFilter] = useState<Map<string, Array<string>>>(new Map([]));
     const [sortedOrder, setOrderBy] = useState<Set<string>>(new Set([]));
     const [load, setLoad] = useState<boolean>(false);
 
-    const handleFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleFilterChange = (event: ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
         if (event.target.value) {
             filter.set(event.target.id, event.target.value.split('&'))
         } else {

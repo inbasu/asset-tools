@@ -1,5 +1,3 @@
-import { Password } from "@mui/icons-material";
-
 export interface Invent {
     key: string;
     store: string;
@@ -14,9 +12,14 @@ export interface Item {
     [key: string]: any;
 }
 
+export interface Report {
+    name: string;
+    label: string;
 
-export const reports = [
-    { name: 'All', label: "Всё оборудование ТЦ", filter: {} }, // All mast be with index 0
+}
+
+export const reports: Array<Report> = [
+    { name: 'All', label: "Всё оборудование ТЦ" }, // All mast be with index 0
     { name: 'Найдено', label: "Отчет по найденному оборудованию" },
     { name: "Не найдено", label: "Отчет по не найденному оборудованию" },
     { name: "Free", label: "Отчет по статусу Free" },
