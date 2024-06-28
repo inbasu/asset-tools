@@ -14,7 +14,7 @@ const mainButtons: Array<mBtn> = [
 ]
 
 const itButtons: Array<mBtn> = [
-    { text: "Управление IT инвентаризациями", roles: ['MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE'], type: "href", to: '/it_inventory_managment' },
+    { text: "Управление IT инвентаризациями", roles: ['MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE'], type: "href", to: '/it_inventory_management' },
     { text: "редактирование одной еденицы", roles: permissions.ItInvent, type: "href", to: '/single-edit/main' },
     { text: "Групповое редактирование", roles: permissions.ItInvent, type: "href", to: '/group-edit/main' },
 ]

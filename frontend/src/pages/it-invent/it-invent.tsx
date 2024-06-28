@@ -2,7 +2,7 @@ import { useEffect,  useState, Fragment, ChangeEvent } from "react";
 // import { UserContext, user } from "../App";
 // import axios from "axios";
 import CircularSpinner from "../../components/spinner";
-import { Invent, Item, Report, reports, filters } from "./data";
+import { Invent, Item, Report, reports, filters, filterItems } from "./data";
 import { test_items } from "./test";
 // MUI
 import Box from '@mui/material/Box';
@@ -20,6 +20,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TableViewIcon from '@mui/icons-material/TableView';
 import CloseIcon from '@mui/icons-material/Close';
 import ItemsTable from "./table";
+import Badge from '@mui/material/Badge';
+import Chip from '@mui/material/Chip';
 
 
 
@@ -41,7 +43,8 @@ export default function ItInvent() {
     const [showFilter, setShowFilters] = useState<Boolean>(false);
     const [fields, setFields] = useState<Map<string, boolean>>(filters);
     const [report, setReport] = useState<Report>(reports[0]);
-    // const [toPrint, setToPrint] = useState<Array<Item>>([]);
+    const [results, setResults] = useState<number>(items.length);
+    const [toPrint, setToPrint] = useState<Set<Item>>(new Set());
 
     // states
     const handleSelectInvent = (event: SelectChangeEvent<string|null>) => {
@@ -79,30 +82,10 @@ export default function ItInvent() {
     }, [])
 
     useEffect(() => {
-        // move to data.ts ??
-        switch (report.name) {
-            case "All":
-                setShown(items);
-                break;
-            case "Free":
-                setShown([]);
-                break;
-            case "Найдено":
-                setShown([]);
-                break;
-            case "Не найдено":
-                setShown([]);
-                break;
-            case "Утиль":
-                setShown([]);
-                break;
-            case "По местам":
-                setShown([]);
-                break;
-            case "Кассы":
-                setShown([]);
-                break;
-}
+        console.log(report.filter)
+        const tmpItems = filterItems(items, report.filter) 
+        setShown(tmpItems)
+        setResults(tmpItems.length)
     }, [report])
     
     return (
@@ -128,7 +111,7 @@ export default function ItInvent() {
                     <Button fullWidth variant="contained" sx={{height: '39px'}} onClick={() => setShowFilters(!showFilter)}>Фильтры</Button>
                 </Grid>
                 <Grid item xs={3}>
-                <PopupState variant="popover" popupId="demo-popup-menu">
+                <PopupState variant="popover" popupId="report-popup-menu">
                     {(popupState) => (
                         <Fragment>
                             <Button fullWidth variant="contained" sx={{height: '39px'}} {...bindTrigger(popupState)}>Отчеты<ExpandMoreIcon /></Button>
@@ -142,7 +125,20 @@ export default function ItInvent() {
                 </PopupState>
                 </Grid>
                 <Grid item xs={3}>
-                    <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={requestInventItems}>Печать</Button>
+                <PopupState variant="popover" popupId="print-popup-menu">
+                    {(popupState) => (
+                            <Fragment>
+                                    <Button fullWidth variant="contained" sx={{ height: '39px' }} {...bindTrigger(popupState)}>Печать
+                                        <ExpandMoreIcon /><Chip color='error' label={toPrint.size} size="small" />
+                                    </Button>
+                                <Menu {...bindMenu(popupState)}>
+                                    <MenuItem >Столбец<Checkbox onChange={(event) => handleChangeFilter(event)} value={"Print"} checked={fields.get('Print') } /></MenuItem> 
+                                    <MenuItem >Список</MenuItem>
+                               
+                    </Menu>
+                    </Fragment>
+                )}
+                </PopupState>
                 </Grid>
                 <Grid item xs={3}>
                     <Button fullWidth variant="contained" sx={{height: '39px'}} onClick={requestInventItems} color="success"><TableViewIcon />В Excel</Button>
@@ -165,9 +161,9 @@ export default function ItInvent() {
                 </Box>}
             <Box justifyContent={"center"} flexGrow={1}>
                 {report && <Typography display="block" width={"100%"} variant="h5" color="initial" textAlign={"center"}>{report.label}</Typography>}
-                {shownItems && <Typography display='block' width={"100%"} variant="overline" color="initial" textAlign={'center'}>результатов оборажено {shownItems.length}</Typography>}
+                {shownItems && <Typography display='block' width={"100%"} variant="overline" color="initial" textAlign={'center'}>результатов оборажено {results}</Typography>}
             </Box>
-            <ItemsTable parent_items={ shownItems } fields={ fields } report={ report }/>
+            <ItemsTable parent_items={shownItems} fields={fields} setParentResults={setResults} toPrint={toPrint} setParentToPrint={setToPrint}/>
         </Box>
     )
 };

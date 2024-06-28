@@ -1,5 +1,5 @@
 import { useEffect, useState, ChangeEvent} from 'react';
-import { Item, Report } from './data';
+import { Item, Report , filterItems} from './data';
 import CircularSpinner from '../../components/spinner';
 // MUI
 import Table from '@mui/material/Table';
@@ -13,30 +13,19 @@ import TextField from '@mui/material/TextField';
 import { IconButton } from '@mui/material';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import Box from '@mui/material/Box';
+import AddIcon from '@mui/icons-material/Add';
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 
-const filterItems = (items: Array<Item>, filter?: Map<string, Array<string>>): Array<Item> => {
-    if (items && filter &&  filter.size) {
-        // yeah this is unreadable but inline
-        // that is prefere coz of productivity
-        return  items.filter((item: Item) => {
-            return ([...filter]).map((one) => {
-                return (one[1]).some((attr: string) => {
-                    if (attr === "?") { return true }
-                    else { return (item[one[0]].toLowerCase()).includes(attr.toLowerCase()) }
-                })
-            }).every((condi) => condi);
-        })}
-    return items
-};
 type Props = {
     parent_items: Array<Item>;
     fields: Map<string, boolean>;
-    report: Report;
+    toPrint: Set<Item>;
+    setParentResults: Function;
+    setParentToPrint: Function;
 }
-export default function ItemsTable({ parent_items, fields, report }: Props) {
-    console.log(report)
+export default function ItemsTable({ parent_items, fields, setParentResults, toPrint, setParentToPrint}: Props) {
     const [items, setItems] = useState<Array<Item>>(parent_items);
     const [filter, setFilter] = useState<Map<string, Array<string>>>(new Map([]));
     const [sortedOrder, setOrderBy] = useState<Set<string>>(new Set([]));
@@ -62,10 +51,28 @@ export default function ItemsTable({ parent_items, fields, report }: Props) {
         setOrderBy(sortedOrder)
         setItems([...items])
     }
+    const handleToPrint = (item) => {
+        const tmp = new Set(toPrint)
+        if (tmp.has(item)) { tmp.delete(item) }
+        else { tmp.add(item) }
+        setParentToPrint(tmp);
+    }
+    const getPrintButton = (item: Item) => {
+        if (toPrint.has(item)) {
+            return (<IconButton onClick={() => handleToPrint(item)}><ClearIcon /></IconButton>)
+        } else {return (<IconButton onClick={() => handleToPrint(item)}><AddIcon /></IconButton>)}
+    }
+
+    useEffect(() => {
+        const tmpF = new Map();
+        setFilter(tmpF);
+    }, [parent_items])    
+
     useEffect(() => {
         setLoad(true);
         let tmp = filterItems(parent_items, filter)
         setItems(tmp);
+        setParentResults(tmp.length)
         setLoad(false);
     }, [fields, filter, parent_items])
 
@@ -79,19 +86,24 @@ export default function ItemsTable({ parent_items, fields, report }: Props) {
             <TableRow>
                       {fields && [...fields.keys()].map((key) => {
                           if (fields.get(key)) {
-                              return (
-                                <TableCell>
-                                      <TextField fullWidth id={key} label={key} variant="standard" size='small' onChange={(event) => handleFilterChange(event)}
-                                          InputProps={{
-                                              endAdornment: (
-                                                <IconButton sx={{ position: 'absolute', right: "0%" }} onClick={() => handelSort(key)} ><SwapVertIcon /></IconButton>
-                                      )}}
+                              if (key !== "Print") {
+                                  return (
+                                      <TableCell>
+                                          <TextField fullWidth id={key} value={filter.has(key) ? filter.get(key) : ''} label={key} variant="standard" size='small' onChange={(event) => handleFilterChange(event)}
+                                              InputProps={{
+                                                  endAdornment: (
+                                                      <IconButton sx={{ position: 'absolute', right: "0%" }} onClick={() => handelSort(key)} ><SwapVertIcon /></IconButton>
+                                                  )
+                                              }}
                                         
-                                      />
-                              </TableCell>)
+                                          />
+                                      </TableCell>)
+                              } else {
+                                  return ( <TableCell><IconButton onClick={() => setParentToPrint(new Set([...items, ...toPrint]))}><AddIcon /></IconButton></TableCell>)
+                              }
                           }
                       } 
-                )}      
+                )}    
           </TableRow>
                         </TableHead>
                         {(items) &&
@@ -100,7 +112,12 @@ export default function ItemsTable({ parent_items, fields, report }: Props) {
                                     <TableRow   >
                                         {fields && [...fields.keys()].map((key) => {
                                             if (fields.get(key)) {
-                                                return (<TableCell>{item[key]}</TableCell>)
+                                                if (key!=="Print"){
+                                                    return (<TableCell>{item[key]}</TableCell>)
+                                                } else {
+                                                    return (<TableCell align='center'>{getPrintButton(item) }</TableCell>)
+                                                    
+                                                }
                                             }
                                         }
                                         )}

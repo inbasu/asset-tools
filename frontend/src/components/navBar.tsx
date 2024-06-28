@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { UserContext, user } from '../../App';
+import { UserContext, user } from '../App';
 import { Link } from 'react-router-dom';
 
 // MUI imports
@@ -10,7 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
-import logo from '../../assets/logo.svg';
+import logo from '../assets/logo.svg';
 
 // Управление материальными активами компании
 
