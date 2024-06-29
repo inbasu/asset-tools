@@ -1,16 +1,16 @@
-import { Button } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export interface mBtn {
-    text: string
-    type: string
-    to: string
-    roles: Array<string>
+    text: string;
+    type: string;
+    to: string;
+    roles: Array<string>;
 }
 
 type Props = {
-    button: mBtn
-}
+    button: mBtn;
+};
 
 export function MenuButton({ button }: Props) {
     if (button.type === 'link') {
@@ -28,7 +28,7 @@ export function MenuButton({ button }: Props) {
                     {button.text}
                 </Button>
             </Link>
-        )
+        );
     } else if (button.type === 'href') {
         return (
             <Button
@@ -43,6 +43,6 @@ export function MenuButton({ button }: Props) {
             >
                 {button.text}
             </Button>
-        )
+        );
     }
 }

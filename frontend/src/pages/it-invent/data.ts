@@ -1,22 +1,22 @@
 export interface Invent {
-    key: string
-    store: string
-    [key: string]: any
+    key: string;
+    store: string;
+    [key: string]: any;
 }
 export interface Item {
-    Key: string
-    Name: string
-    Location: string
-    Type: string
-    Model: string
-    invented?: string
-    [key: string]: any
+    Key: string;
+    Name: string;
+    Location: string;
+    Type: string;
+    Model: string;
+    invented?: string;
+    [key: string]: any;
 }
 
 export interface Report {
-    name: string
-    label: string
-    filter?: Map<string, Array<string>>
+    name: string;
+    label: string;
+    filter?: Map<string, Array<string>>;
 }
 
 export const reports: Array<Report> = [
@@ -85,7 +85,7 @@ export const reports: Array<Report> = [
             ],
         ]),
     },
-]
+];
 
 export const filters = new Map([
     ['INV No', true],
@@ -98,47 +98,49 @@ export const filters = new Map([
     ['Status', false],
     ['User', false],
     ['Print', false],
-])
+]);
 
 export const filterItems = (items: Array<Item>, filter?: Map<string, Array<string>> | undefined): Array<Item> => {
     if (items && filter && filter.size) {
         return items.filter((item: Item) => {
             return [...filter]
                 .map((one) => {
-                    let yes = Array<string>()
-                    let not = Array<string>()
+                    let yes = Array<string>();
+                    let not = Array<string>();
                     one[1].map((o) => {
                         if (o[0] === '!') {
-                            not.push(o)
+                            not.push(o);
                         } else {
-                            yes.push(o)
+                            yes.push(o);
                         }
-                    })
+                    });
 
                     return (
                         (yes.length === 0 ||
                             yes.some((attr: string) => {
                                 if (attr.length == 0) {
-                                    return true
+                                    return true;
                                 } else if (attr === '?') {
-                                    return item[one[0]] ? true : false
+                                    return item[one[0]] ? true : false;
                                 } else {
-                                    return (item[one[0]] ? item[one[0]] : '').toLowerCase().includes(attr.toLowerCase())
+                                    return (item[one[0]] ? item[one[0]] : '')
+                                        .toLowerCase()
+                                        .includes(attr.toLowerCase());
                                 }
                             })) &&
                         !not.some((attr) => {
                             if (attr.length <= 1) {
-                                return false
+                                return false;
                             } else {
                                 return (item[one[0]] ? item[one[0]] : '')
                                     .toLowerCase()
-                                    .includes(attr.slice(1).toLowerCase())
+                                    .includes(attr.slice(1).toLowerCase());
                             }
                         })
-                    )
+                    );
                 })
-                .every((condi) => condi)
-        })
+                .every((condi) => condi);
+        });
     }
-    return items
-}
+    return items;
+};

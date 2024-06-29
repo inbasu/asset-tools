@@ -1,91 +1,91 @@
-import { useEffect, useState, ChangeEvent } from 'react'
-import { Item, filterItems } from './data'
-import CircularSpinner from '../../components/spinner'
+import { useEffect, useState, ChangeEvent } from 'react';
+import { Item, filterItems } from './data';
+import CircularSpinner from '../../components/spinner';
 // MUI
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import TextField from '@mui/material/TextField'
-import { IconButton } from '@mui/material'
-import SwapVertIcon from '@mui/icons-material/SwapVert'
-import Box from '@mui/material/Box'
-import AddIcon from '@mui/icons-material/Add'
-import ClearIcon from '@mui/icons-material/Clear'
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import { IconButton } from '@mui/material';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
+import Box from '@mui/material/Box';
+import AddIcon from '@mui/icons-material/Add';
+import ClearIcon from '@mui/icons-material/Clear';
 
 type Props = {
-    parent_items: Array<Item>
-    fields: Map<string, boolean>
-    toPrint: Set<Item>
-    setParentResults: Function
-    setParentToPrint: Function
-}
+    parent_items: Array<Item>;
+    fields: Map<string, boolean>;
+    toPrint: Set<Item>;
+    setParentResults: Function;
+    setParentToPrint: Function;
+};
 export default function ItemsTable({ parent_items, fields, setParentResults, toPrint, setParentToPrint }: Props) {
-    const [items, setItems] = useState<Array<Item>>(parent_items)
-    const [filter, setFilter] = useState<Map<string, Array<string>>>(new Map([]))
-    const [sortedOrder, setOrderBy] = useState<Set<string>>(new Set([]))
-    const [load, setLoad] = useState<boolean>(false)
+    const [items, setItems] = useState<Array<Item>>(parent_items);
+    const [filter, setFilter] = useState<Map<string, Array<string>>>(new Map([]));
+    const [sortedOrder, setOrderBy] = useState<Set<string>>(new Set([]));
+    const [load, setLoad] = useState<boolean>(false);
 
     const handleFilterChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (event.target.value) {
-            filter.set(event.target.id, event.target.value.split('&'))
+            filter.set(event.target.id, event.target.value.split('&'));
         } else {
-            filter.delete(event.target.id)
+            filter.delete(event.target.id);
         }
-        setFilter(new Map(filter))
-    }
+        setFilter(new Map(filter));
+    };
 
     const handelSort = (key: string) => {
         if (sortedOrder.has(key)) {
-            items.sort((a, b) => (a[key] > b[key] ? 0 : -1))
-            sortedOrder.delete(key)
+            items.sort((a, b) => (a[key] > b[key] ? 0 : -1));
+            sortedOrder.delete(key);
         } else {
-            items.sort((a, b) => (a[key] < b[key] ? 0 : -1))
-            sortedOrder.add(key)
+            items.sort((a, b) => (a[key] < b[key] ? 0 : -1));
+            sortedOrder.add(key);
         }
-        setOrderBy(sortedOrder)
-        setItems([...items])
-    }
+        setOrderBy(sortedOrder);
+        setItems([...items]);
+    };
     const handleToPrint = (item: Item) => {
-        const tmp = new Set(toPrint)
+        const tmp = new Set(toPrint);
         if (tmp.has(item)) {
-            tmp.delete(item)
+            tmp.delete(item);
         } else {
-            tmp.add(item)
+            tmp.add(item);
         }
-        setParentToPrint(tmp)
-    }
+        setParentToPrint(tmp);
+    };
     const getPrintButton = (item: Item) => {
         if (toPrint.has(item)) {
             return (
                 <IconButton onClick={() => handleToPrint(item)} sx={{ color: 'red' }}>
                     <ClearIcon />
                 </IconButton>
-            )
+            );
         } else {
             return (
                 <IconButton onClick={() => handleToPrint(item)}>
                     <AddIcon />
                 </IconButton>
-            )
+            );
         }
-    }
+    };
 
     useEffect(() => {
-        const tmpF = new Map()
-        setFilter(tmpF)
-    }, [parent_items])
+        const tmpF = new Map();
+        setFilter(tmpF);
+    }, [parent_items]);
 
     useEffect(() => {
-        setLoad(true)
-        let tmp = filterItems(parent_items, filter)
-        setItems(tmp)
-        setParentResults(tmp.length)
-        setLoad(false)
-    }, [fields, filter, parent_items])
+        setLoad(true);
+        let tmp = filterItems(parent_items, filter);
+        setItems(tmp);
+        setParentResults(tmp.length);
+        setLoad(false);
+    }, [fields, filter, parent_items]);
 
     return (
         <Box width={'100%'}>
@@ -121,7 +121,7 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
                                                             }}
                                                         />
                                                     </TableCell>
-                                                )
+                                                );
                                             } else {
                                                 if (items.every((item) => toPrint.has(item))) {
                                                     return (
@@ -140,7 +140,7 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
                                                                 <ClearIcon />
                                                             </IconButton>
                                                         </TableCell>
-                                                    )
+                                                    );
                                                 } else {
                                                     return (
                                                         <TableCell>
@@ -152,7 +152,7 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
                                                                 <AddIcon />
                                                             </IconButton>
                                                         </TableCell>
-                                                    )
+                                                    );
                                                 }
                                             }
                                         }
@@ -167,11 +167,11 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
                                             [...fields.keys()].map((key) => {
                                                 if (fields.get(key)) {
                                                     if (key !== 'Print') {
-                                                        return <TableCell>{item[key]}</TableCell>
+                                                        return <TableCell>{item[key]}</TableCell>;
                                                     } else {
                                                         return (
                                                             <TableCell align="center">{getPrintButton(item)}</TableCell>
-                                                        )
+                                                        );
                                                     }
                                                 }
                                             })}
@@ -183,5 +183,5 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
                 </TableContainer>
             )}
         </Box>
-    )
+    );
 }
