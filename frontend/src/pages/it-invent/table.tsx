@@ -51,7 +51,7 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
         setOrderBy(sortedOrder)
         setItems([...items])
     }
-    const handleToPrint = (item) => {
+    const handleToPrint = (item: Item) => {
         const tmp = new Set(toPrint)
         if (tmp.has(item)) { tmp.delete(item) }
         else { tmp.add(item) }
@@ -59,7 +59,7 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
     }
     const getPrintButton = (item: Item) => {
         if (toPrint.has(item)) {
-            return (<IconButton onClick={() => handleToPrint(item)}><ClearIcon /></IconButton>)
+            return (<IconButton onClick={() => handleToPrint(item)} sx={{color: 'red'}}><ClearIcon /></IconButton>)
         } else {return (<IconButton onClick={() => handleToPrint(item)}><AddIcon /></IconButton>)}
     }
 
@@ -99,7 +99,10 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
                                           />
                                       </TableCell>)
                               } else {
-                                  return ( <TableCell><IconButton onClick={() => setParentToPrint(new Set([...items, ...toPrint]))}><AddIcon /></IconButton></TableCell>)
+                                  if (items.every((item) => toPrint.has(item))) {
+                                      return (<TableCell><IconButton onClick={() => setParentToPrint(new Set([...toPrint].filter((item) => !(new Set(items)).has(item))))}><ClearIcon /></IconButton></TableCell>)
+                                  } else {return ( <TableCell><IconButton onClick={() => setParentToPrint(new Set([...items, ...toPrint]))}><AddIcon /></IconButton></TableCell>)}
+                                  
                               }
                           }
                       } 
