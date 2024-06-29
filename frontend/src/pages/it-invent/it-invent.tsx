@@ -62,6 +62,16 @@ export default function ItInvent() {
         setLoad(false);
     };
 
+    const handlePrint = () => {
+        // send toPrint to server
+        console.log(toPrint.size);
+    };
+
+    const handleToExcel = () => {
+        // send shownItems to print
+        console.log(shownItems.length);
+    };
+
     // effects
     useEffect(() => {
         setLoad(true);
@@ -181,7 +191,7 @@ export default function ItInvent() {
                         fullWidth
                         variant="contained"
                         sx={{ height: '39px' }}
-                        onClick={requestInventItems}
+                        onClick={handleToExcel}
                         color="success"
                     >
                         <TableViewIcon />В Excel
