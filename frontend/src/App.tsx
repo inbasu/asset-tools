@@ -1,7 +1,7 @@
-
+import axios from "axios";
 import Router from "./router"
-import { createContext } from "react"
-
+import { createContext, useEffect, useState } from "react"
+import CircularSpinner from "./components/spinner";
 
 export interface user {
   username: string,
@@ -10,28 +10,48 @@ export interface user {
   store_role: Array<string>,
 }
 
-// Get user once and sharre it across app
-export const UserContext = createContext<user>({
-  username: 'ivan.fisenko',
+const baseUser: user = {
+  username: '',
   email: '',
-  roles: ['MCC_RUINSIGHT_IT_ROLE', 'MCC_RU_INSIGHT_QA_ROLE', 'MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE'],
-  store_role: ["1012", "1014"],
-});
+  roles: [],
+  store_role: [],
+}
+// Get user once and sharre it across app
+export const UserContext = createContext<user>(baseUser);
+
+const getUser = async () => {
+  return {
+    username: 'test.user',
+    email: "some@domen.zz",
+    roles: ["MCC_RU_INSIGHT_IT_ROLE"],
+    store_role: [],
+  }
+  // try {
+  //   const responce = await axios.get('/auth/whoami/')
+  //   return responce.data
+  // } catch (error) {console.log(error)}
+}
 
 
 
 function App() {
-  const user = {
-    username: 'ivan.fisenko',
-    email: '',
-    roles: ['MCC_RUINSIGHT_IT_ROLE', 'MCC_RU_INSIGHT_QA_ROLE', 'MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE'],
-    store_role: ["1012", "1014"],
-  };
+  const [loading, setLoading] = useState(false); 
+  const [user, setUser] = useState<user|undefined>();
+
+  useEffect(() => {
+    setLoading(true);
+    (async () => {
+      const tmp: user = await getUser()
+      setUser(tmp)
+    })()
+    setLoading(false)
+  }, [])
 
 
   return (
     <>
-      {(user !== null) && 
+      {loading && <CircularSpinner /> }
+      {(user) && 
         <UserContext.Provider value={user}>
           <Router />
         </UserContext.Provider>

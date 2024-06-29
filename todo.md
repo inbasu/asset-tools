@@ -29,7 +29,7 @@
 
 #### SPRINT:
 
-[24.06] HTML => PDF
+[24.06|FAIL] HTML => PDF 
 
 #### TESTS:
 [DONE] URL test;  
