@@ -8,18 +8,15 @@ import { useContext } from 'react';
 import { checkPermission, permissions } from './permissions';
 
 export default function Router() {
-    const user = useContext<user>(UserContext);
-    return (
-        <BrowserRouter>
-            <Navbar /> {/* navbar mast be insigt router or <Link> wouldn't wok */}
-            <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/mobile" element={<Mobile />} />
-                <Route
-                    path="/it-invent"
-                    element={checkPermission(user, permissions.ItInvent) ? <ItInvent /> : <Index />}
-                />
-            </Routes>
-        </BrowserRouter>
-    );
+  const user = useContext<user>(UserContext);
+  return (
+    <BrowserRouter>
+      <Navbar /> {/* navbar mast be insigt router or <Link> wouldn't wok */}
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/mobile" element={<Mobile />} />
+        <Route path="/it-invent" element={checkPermission(user, permissions.ItInvent) ? <ItInvent /> : <Index />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }

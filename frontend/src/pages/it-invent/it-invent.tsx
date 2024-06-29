@@ -24,240 +24,199 @@ import ItemsTable from './table';
 import Chip from '@mui/material/Chip';
 
 const invs: Array<Invent> = [
-    { key: '1', name: '123', store: '1014' },
-    { key: '2', name: '321', store: '1012' },
+  { key: '1', name: '123', store: '1014' },
+  { key: '2', name: '321', store: '1012' },
 ];
 
 export default function ItInvent() {
-    // const user = useContext<user>(UserContext);
-    const [load, setLoad] = useState<Boolean>(false);
-    const [invents, setInvents] = useState<Array<Invent>>([]);
-    const [inventory, setInventory] = useState<Invent>();
-    const [items, setItems] = useState<Array<Item>>([]);
-    const [shownItems, setShown] = useState<Array<Item>>([]);
-    const [showFilter, setShowFilters] = useState<Boolean>(false);
-    const [fields, setFields] = useState<Map<string, boolean>>(filters);
-    const [report, setReport] = useState<Report>(reports[0]);
-    const [results, setResults] = useState<number>(items.length);
-    const [toPrint, setToPrint] = useState<Set<Item>>(new Set());
+  // const user = useContext<user>(UserContext);
+  const [load, setLoad] = useState<Boolean>(false);
+  const [invents, setInvents] = useState<Array<Invent>>([]);
+  const [inventory, setInventory] = useState<Invent>();
+  const [items, setItems] = useState<Array<Item>>([]);
+  const [shownItems, setShown] = useState<Array<Item>>([]);
+  const [showFilter, setShowFilters] = useState<Boolean>(false);
+  const [fields, setFields] = useState<Map<string, boolean>>(filters);
+  const [report, setReport] = useState<Report>(reports[0]);
+  const [results, setResults] = useState<number>(items.length);
+  const [toPrint, setToPrint] = useState<Set<Item>>(new Set());
 
-    // states
-    const handleSelectInvent = (event: SelectChangeEvent<string | null>) => {
-        for (let i = 0; i < invents.length; i++) {
-            if (invents[i].key == event.target.value) {
-                setInventory(invents[i]);
-            }
-        }
-    };
+  // states
+  const handleSelectInvent = (event: SelectChangeEvent<string | null>) => {
+    for (let i = 0; i < invents.length; i++) {
+      if (invents[i].key == event.target.value) {
+        setInventory(invents[i]);
+      }
+    }
+  };
 
-    const handleChangeFilter = (event: ChangeEvent<HTMLInputElement>) => {
-        filters.set(event.target.value, !fields.get(event.target.value));
-        setFields(new Map(filters)); // here need to create new map coz useState dosnt see changes if it in mutable
-    };
+  const handleChangeFilter = (event: ChangeEvent<HTMLInputElement>) => {
+    filters.set(event.target.value, !fields.get(event.target.value));
+    setFields(new Map(filters)); // here need to create new map coz useState dosnt see changes if it in mutable
+  };
 
-    const requestInventItems = () => {
-        setLoad(true);
-        setItems(test_items);
-        setShown(test_items);
-        setLoad(false);
-    };
+  const requestInventItems = () => {
+    setLoad(true);
+    setItems(test_items);
+    setShown(test_items);
+    setLoad(false);
+  };
 
-    const handlePrint = () => {
-        // send toPrint to server
-        console.log(toPrint.size);
-    };
+  //   const handlePrint = () => {
+  //     // send toPrint to server
+  //     console.log(toPrint.size);
+  //   };
 
-    const handleToExcel = () => {
-        // send shownItems to print
-        console.log(shownItems.length);
-    };
+  const handleToExcel = () => {
+    // send shownItems to print
+    console.log(shownItems.length);
+  };
 
-    // effects
-    useEffect(() => {
-        setLoad(true);
-        // load printers
-        // load invents
-        setInvents(invs);
-        // setItems(itms)
-        invs.sort((a, b) => (a.store < b.store ? -1 : 0));
-        document.title = 'IT invent';
-        setLoad(false);
-    }, []);
+  // effects
+  useEffect(() => {
+    setLoad(true);
+    // load printers
+    // load invents
+    setInvents(invs);
+    // setItems(itms)
+    invs.sort((a, b) => (a.store < b.store ? -1 : 0));
+    document.title = 'IT invent';
+    setLoad(false);
+  }, []);
 
-    useEffect(() => {
-        console.log(report.filter);
-        const tmpItems = filterItems(items, report.filter);
-        setShown(tmpItems);
-        setResults(tmpItems.length);
-    }, [report]);
+  useEffect(() => {
+    console.log(report.filter);
+    const tmpItems = filterItems(items, report.filter);
+    setShown(tmpItems);
+    setResults(tmpItems.length);
+  }, [report]);
 
-    return (
-        <Box p={'8%'} pt={'5vh'} sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-            {load && <CircularSpinner />}
-            <Grid container spacing={1} width={'30%'} minWidth={'600px'}>
-                <Grid item xs={9}>
-                    <Select
-                        fullWidth
-                        size="small"
-                        id="inventory-select"
-                        value={inventory ? inventory.key : null}
-                        onChange={(event) => handleSelectInvent(event)}
-                    >
-                        {invents &&
-                            invents.map((inv: Invent) => {
-                                return <MenuItem value={inv.key}>{inv.store}</MenuItem>;
-                            })}
-                    </Select>
-                </Grid>
-                <Grid item xs={3}>
-                    <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={requestInventItems}>
-                        Запрос к БД
-                    </Button>
-                </Grid>
-                <Grid item xs={3}>
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        sx={{ height: '39px' }}
-                        onClick={() => setShowFilters(!showFilter)}
-                    >
-                        Фильтры
-                    </Button>
-                </Grid>
-                <Grid item xs={3}>
-                    <PopupState variant="popover" popupId="report-popup-menu">
-                        {(popupState) => (
-                            <Fragment>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ height: '39px' }}
-                                    {...bindTrigger(popupState)}
-                                >
-                                    Отчеты
-                                    <ExpandMoreIcon />
-                                </Button>
-                                <Menu {...bindMenu(popupState)}>
-                                    {reports &&
-                                        reports
-                                            .sort((a, b) => (a.name < b.name ? -1 : 0))
-                                            .map((report) => [
-                                                <MenuItem
-                                                    onClick={() => {
-                                                        setReport(report);
-                                                        popupState.close;
-                                                    }}
-                                                    value={report.name}
-                                                >
-                                                    {report.name}
-                                                </MenuItem>,
-                                            ])}
-                                </Menu>
-                            </Fragment>
-                        )}
-                    </PopupState>
-                </Grid>
-                <Grid item xs={3}>
-                    <PopupState variant="popover" popupId="print-popup-menu">
-                        {(popupState) => (
-                            <Fragment>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ height: '39px' }}
-                                    {...bindTrigger(popupState)}
-                                >
-                                    Печать
-                                    <ExpandMoreIcon />
-                                    <Chip color="error" label={toPrint.size} size="small" />
-                                </Button>
-                                <Menu {...bindMenu(popupState)}>
-                                    <MenuItem>
-                                        Столбец
-                                        <Checkbox
-                                            onChange={(event) => handleChangeFilter(event)}
-                                            value={'Print'}
-                                            checked={fields.get('Print')}
-                                        />
-                                    </MenuItem>
-                                    <MenuItem>Список</MenuItem>
-                                </Menu>
-                            </Fragment>
-                        )}
-                    </PopupState>
-                </Grid>
-                <Grid item xs={3}>
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        sx={{ height: '39px' }}
-                        onClick={handleToExcel}
-                        color="success"
-                    >
-                        <TableViewIcon />В Excel
-                    </Button>
-                </Grid>
-            </Grid>
-            {showFilter && (
-                <Box
-                    boxShadow={3}
-                    sx={{
-                        position: 'absolute',
-                        width: '600px',
-                        marginLeft: '50%',
-                        left: '-300px',
-                        marginTop: '30vh',
-                        background: 'white',
-                    }}
-                >
-                    <IconButton
-                        aria-label="close"
-                        sx={{ position: 'absolute', left: '560px' }}
-                        onClick={() => setShowFilters(false)}
-                    >
-                        <CloseIcon fontSize="inherit" />
-                    </IconButton>
-                    <Grid container p={'10px 20px'}>
-                        {[...filters.keys()].map((field) => {
-                            return (
-                                <Grid item xs={6}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                onChange={(event) => {
-                                                    handleChangeFilter(event);
-                                                }}
-                                                value={field}
-                                                checked={fields.get(field)}
-                                            />
-                                        }
-                                        label={field}
-                                    />
-                                </Grid>
-                            );
-                        })}
-                    </Grid>
-                </Box>
+  return (
+    <Box p={'8%'} pt={'5vh'} sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+      {load && <CircularSpinner />}
+      <Grid container spacing={1} width={'30%'} minWidth={'600px'}>
+        <Grid item xs={9}>
+          <Select fullWidth size="small" id="inventory-select" value={inventory ? inventory.key : null} onChange={(event) => handleSelectInvent(event)}>
+            {invents &&
+              invents.map((inv: Invent) => {
+                return <MenuItem value={inv.key}>{inv.store}</MenuItem>;
+              })}
+          </Select>
+        </Grid>
+        <Grid item xs={3}>
+          <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={requestInventItems}>
+            Запрос к БД
+          </Button>
+        </Grid>
+        <Grid item xs={3}>
+          <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={() => setShowFilters(!showFilter)}>
+            Фильтры
+          </Button>
+        </Grid>
+        <Grid item xs={3}>
+          <PopupState variant="popover" popupId="report-popup-menu">
+            {(popupState) => (
+              <Fragment>
+                <Button fullWidth variant="contained" sx={{ height: '39px' }} {...bindTrigger(popupState)}>
+                  Отчеты
+                  <ExpandMoreIcon />
+                </Button>
+                <Menu {...bindMenu(popupState)}>
+                  {reports &&
+                    reports
+                      .sort((a, b) => (a.name < b.name ? -1 : 0))
+                      .map((report) => [
+                        <MenuItem
+                          onClick={() => {
+                            setReport(report);
+                            popupState.close;
+                          }}
+                          value={report.name}
+                        >
+                          {report.name}
+                        </MenuItem>,
+                      ])}
+                </Menu>
+              </Fragment>
             )}
-            <Box justifyContent={'center'} flexGrow={1}>
-                {report && (
-                    <Typography display="block" width={'100%'} variant="h5" color="initial" textAlign={'center'}>
-                        {report.label}
-                    </Typography>
-                )}
-                {shownItems && (
-                    <Typography display="block" width={'100%'} variant="overline" color="initial" textAlign={'center'}>
-                        результатов оборажено {results}
-                    </Typography>
-                )}
-            </Box>
-            <ItemsTable
-                parent_items={shownItems}
-                fields={fields}
-                setParentResults={setResults}
-                toPrint={toPrint}
-                setParentToPrint={setToPrint}
-            />
+          </PopupState>
+        </Grid>
+        <Grid item xs={3}>
+          <PopupState variant="popover" popupId="print-popup-menu">
+            {(popupState) => (
+              <Fragment>
+                <Button fullWidth variant="contained" sx={{ height: '39px' }} {...bindTrigger(popupState)}>
+                  Печать
+                  <ExpandMoreIcon />
+                  <Chip color="error" label={toPrint.size} size="small" />
+                </Button>
+                <Menu {...bindMenu(popupState)}>
+                  <MenuItem>
+                    Столбец
+                    <Checkbox onChange={(event) => handleChangeFilter(event)} value={'Print'} checked={fields.get('Print')} />
+                  </MenuItem>
+                  <MenuItem>Список</MenuItem>
+                </Menu>
+              </Fragment>
+            )}
+          </PopupState>
+        </Grid>
+        <Grid item xs={3}>
+          <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={handleToExcel} color="success">
+            <TableViewIcon />В Excel
+          </Button>
+        </Grid>
+      </Grid>
+      {showFilter && (
+        <Box
+          boxShadow={3}
+          sx={{
+            position: 'absolute',
+            width: '600px',
+            marginLeft: '50%',
+            left: '-300px',
+            marginTop: '30vh',
+            background: 'white',
+          }}
+        >
+          <IconButton aria-label="close" sx={{ position: 'absolute', left: '560px' }} onClick={() => setShowFilters(false)}>
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+          <Grid container p={'10px 20px'}>
+            {[...filters.keys()].map((field) => {
+              return (
+                <Grid item xs={6}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={(event) => {
+                          handleChangeFilter(event);
+                        }}
+                        value={field}
+                        checked={fields.get(field)}
+                      />
+                    }
+                    label={field}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
         </Box>
-    );
+      )}
+      <Box justifyContent={'center'} flexGrow={1}>
+        {report && (
+          <Typography display="block" width={'100%'} variant="h5" color="initial" textAlign={'center'}>
+            {report.label}
+          </Typography>
+        )}
+        {shownItems && (
+          <Typography display="block" width={'100%'} variant="overline" color="initial" textAlign={'center'}>
+            результатов оборажено {results}
+          </Typography>
+        )}
+      </Box>
+      <ItemsTable parent_items={shownItems} fields={fields} setParentResults={setResults} toPrint={toPrint} setParentToPrint={setToPrint} />
+    </Box>
+  );
 }
