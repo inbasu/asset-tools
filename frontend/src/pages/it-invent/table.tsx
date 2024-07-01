@@ -23,6 +23,7 @@ type Props = {
   setParentResults: Function;
   setParentToPrint: Function;
 };
+
 export default function ItemsTable({ parent_items, fields, setParentResults, toPrint, setParentToPrint }: Props) {
   const [items, setItems] = useState<Array<Item>>(parent_items);
   const [filter, setFilter] = useState<Map<string, Array<string>>>(new Map([]));

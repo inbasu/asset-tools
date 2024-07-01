@@ -5,23 +5,32 @@ from rest_framework.permissions import BasePermission
 
 
 # Permission classe for API
-class ItUserPermission(BasePermission):
+class ITUserPermission(BasePermission):
     message = "IT roles only"
     roles = {
         "MCC_RU_INSIGHT_IT_ROLE",
     }
 
     def has_permission(self, request, view) -> bool:
-        if user := request.session.get("user", False):
-            return bool(user) and bool([role for role in user["roles"] if role in self.roles])
+        user = request.session.get("user", False)
+        return bool(user) and bool([role for role in user["roles"] if role in self.roles])
+
+
+class ITInventInventPermission(BasePermission):
+    message = "IT Invent Admin only"
+    role = ""
+
+    def has_permission(self, request, view):
+        user = request.session.get("user", False)
+        return bool(user) and self.role in user.roles
 
 
 class UserPermission(BasePermission):
     message = "With store assigned only"
 
     def has_permission(self, request, view) -> bool:
-        if user := request.session.get("user", False):
-            return bool(user) and bool([role for role in user["store_role"]])
+        user = request.session.get("user", False)
+        return bool(user) and bool([role for role in user["store_role"]])
 
 
 #  Methods mixins for standart views

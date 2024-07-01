@@ -2,11 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from abc import ABC, abstractmethod
 
-from mars.premissions import UserWithStorePermission, ItUserPermission
+from mars.premissions import UserWithStorePermission, ITUserPermission
 
 
 class BaseView(APIView, ABC):
-    permission_classes = [UserWithStorePermission | ItUserPermission]
+    permission_classes = [UserWithStorePermission | ITUserPermission]
     item_types = []
 
     def form_iql(self, request) -> str:
@@ -16,16 +16,16 @@ class BaseView(APIView, ABC):
     def post(self, request): ...
 
 
-class GiveawayView(BaseView):
+class GiveawayItemsView(BaseView):
     def post(self, request):
         return Response({})
 
 
-class TakeBackView(BaseView):
+class TakeBackItemsView(BaseView):
     def post(self, request):
         return Response({})
 
 
-class SendView(BaseView):
+class SendItemsView(BaseView):
     def post(self, request):
         return Response({})

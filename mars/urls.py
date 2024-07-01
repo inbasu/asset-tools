@@ -1,6 +1,6 @@
 from django.urls import path
 
-from mars.views.it import CreateRunView, IQLRunView, UpdateRunView
+from mars.views.base import CreateRunView, IQLRunView, UpdateRunView
 
 urlpatterns = [
     path("iql/run/", IQLRunView.as_view()),

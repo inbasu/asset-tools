@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment, ChangeEvent } from 'react';
 // import { UserContext, user } from "../App";
 // import axios from "axios";
 import CircularSpinner from '../../components/spinner';
-import { Invent, Item, Report, reports, filters, filterItems } from './data';
+import { Invent, Item, Report, Printer, reports, filters, filterItems } from './data';
 import { test_items } from './test';
 // MUI
 import Box from '@mui/material/Box';
@@ -22,6 +22,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ItemsTable from './table';
 // import Badge from '@mui/material/Badge'
 import Chip from '@mui/material/Chip';
+import axios from 'axios';
 
 const invs: Array<Invent> = [
   { key: '1', name: '123', store: '1014' },
@@ -32,13 +33,15 @@ export default function ItInvent() {
   // const user = useContext<user>(UserContext);
   const [load, setLoad] = useState<Boolean>(false);
   const [invents, setInvents] = useState<Array<Invent>>([]);
-  const [inventory, setInventory] = useState<Invent>();
+  const [inventory, setInventory] = useState<Invent | undefined>(undefined);
   const [items, setItems] = useState<Array<Item>>([]);
   const [shownItems, setShown] = useState<Array<Item>>([]);
   const [showFilter, setShowFilters] = useState<Boolean>(false);
   const [fields, setFields] = useState<Map<string, boolean>>(filters);
   const [report, setReport] = useState<Report>(reports[0]);
   const [results, setResults] = useState<number>(items.length);
+  const [printers, setPrinters] = useState<Map<string, Printer>>();
+  const [printer, setPrinter] = useState<Printer>();
   const [toPrint, setToPrint] = useState<Set<Item>>(new Set());
 
   // states
@@ -57,15 +60,18 @@ export default function ItInvent() {
 
   const requestInventItems = () => {
     setLoad(true);
-    setItems(test_items);
-    setShown(test_items);
+    (async () => {
+      axios.post('/invents', { invented: true, inventory: inventory }).then((response) => setItems(new Array(...items, ...response.data)));
+      axios.post('/invents', { inveted: false, intentory: inventory }).then((response) => setItems(new Array(...items, response.data)));
+    })();
+    setShown(items);
     setLoad(false);
   };
 
-  //   const handlePrint = () => {
-  //     // send toPrint to server
-  //     console.log(toPrint.size);
-  //   };
+  const handlePrint = () => {
+    axios.post('/', { printer: printer?.name, items: [...toPrint] });
+    console.log(toPrint.size);
+  };
 
   const handleToExcel = () => {
     // send shownItems to print
@@ -75,17 +81,15 @@ export default function ItInvent() {
   // effects
   useEffect(() => {
     setLoad(true);
-    // load printers
-    // load invents
+    // axios.get('/').then((response) => setPrinters(response.data));
+    // axios.get('/').then((response) => setInvents(response.data));
     setInvents(invs);
-    // setItems(itms)
     invs.sort((a, b) => (a.store < b.store ? -1 : 0));
     document.title = 'IT invent';
     setLoad(false);
   }, []);
 
   useEffect(() => {
-    console.log(report.filter);
     const tmpItems = filterItems(items, report.filter);
     setShown(tmpItems);
     setResults(tmpItems.length);
@@ -104,7 +108,7 @@ export default function ItInvent() {
           </Select>
         </Grid>
         <Grid item xs={3}>
-          <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={requestInventItems}>
+          <Button fullWidth variant="contained" sx={{ height: '39px' }} disabled={inventory === undefined ? true : false} onClick={requestInventItems}>
             Запрос к БД
           </Button>
         </Grid>
