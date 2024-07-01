@@ -28,6 +28,7 @@ export interface Location {
 }
 
 export interface User {
+    Key: string;
     'ФИО': string;
     Email: string;
     Store: string

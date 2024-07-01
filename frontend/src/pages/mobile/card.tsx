@@ -1,4 +1,5 @@
 import NotificationWithButton from '../../components/notifications/alertWithButton';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Item, Store, Location, User } from './data';
 import NotificationSuccess from '../../components/notifications/allGood';
@@ -26,14 +27,27 @@ export default function Card({ item, action }: Props) {
   const [location, setLocation] = useState<Location>();
   const [user, setUser] = useState<User>();
   const [users, setUsers] = useState<Array<User>>();
-  const [code, setCode] = useState<string>();
+  const [code, setCode] = useState<string>('');
+  const [itreq, setItreq] = useState<string>('');
   const [blank, setBlank] = useState();
   const [response, setResponse] = useState<string>('');
   const [alert, setAlert] = useState<Boolean>(false);
   const [success, setSuccess] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<Boolean>(false);
 
   const handleDownload = () => {};
-  const handleRequest = () => {};
+  const handleRequest = () => {
+    setLoading(true);
+    var formData = new FormData();
+    formData.append('blank', blank ? blank : '');
+    formData.append('store', store ? store.Key : '');
+    formData.append('location', location ? location.Key : '');
+    formData.append('code', code);
+    formData.append('user', user ? user.Key : '');
+    formData.append('itreq', itreq);
+    axios.post('/', formData);
+    setLoading(false);
+  };
 
   useEffect(() => {}, [blank, store, location, user]);
   useEffect(() => {}, [user]);
@@ -86,7 +100,7 @@ export default function Card({ item, action }: Props) {
         </Grid>
         <Grid item xs={3}>
           {action === 'send' ? (
-            <TextField size="small" label="ТЦ" fullWidth></TextField>
+            <TextField size="small" label="ТЦ" onChange={(event) => console.log(event)} fullWidth></TextField>
           ) : (
             <Button color="secondary" onClick={handleDownload}>
               Скачать бланк
@@ -95,7 +109,7 @@ export default function Card({ item, action }: Props) {
           )}
         </Grid>
         <Grid item xs={6.5}>
-          {action == 'send' ? <TextField size="small" label="Код" fullWidth></TextField> : <Button></Button>}
+          {action == 'send' ? <TextField size="small" label="Код" onChange={(event) => setCode(event.target.value)} fullWidth></TextField> : <Button></Button>}
         </Grid>
         <Grid item xs={2.5}>
           <Button variant="contained" onClick={handleRequest} fullWidth>
