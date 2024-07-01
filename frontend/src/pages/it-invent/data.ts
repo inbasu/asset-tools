@@ -19,6 +19,8 @@ export interface Report {
   filter?: Map<string, Array<string>>;
 }
 
+
+
 export const reports: Array<Report> = [
   { name: 'All', label: 'Всё оборудование ТЦ' }, // All mast be with index 0
   { name: 'Найдено', label: 'Отчет по найденному оборудованию', filter: new Map([['Invented', ['yes']]]) },
