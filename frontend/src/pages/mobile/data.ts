@@ -26,3 +26,9 @@ export interface Location {
     Name: string;
     Store: Array<Store>;
 }
+
+export interface User {
+    'ФИО': string;
+    Email: string;
+    Store: string
+}
