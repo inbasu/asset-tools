@@ -22,12 +22,13 @@ type Props = {
 const l: number = 4;
 
 export default function Card({ item, action }: Props) {
-  const [store, setStore] = useState();
-  const [location, setLocation] = useState();
-  const [user, setUser] = useState();
-  const [code, setCode] = useState();
+  const [store, setStore] = useState<Store>();
+  const [location, setLocation] = useState<Location>();
+  const [user, setUser] = useState<User>();
+  const [users, setUsers] = useState<Array<User>>();
+  const [code, setCode] = useState<string>();
   const [blank, setBlank] = useState();
-  const [resp, setResp] = useState<string>('');
+  const [response, setResponse] = useState<string>('');
   const [alert, setAlert] = useState<Boolean>(false);
   const [success, setSuccess] = useState<Boolean>(false);
 
@@ -35,6 +36,7 @@ export default function Card({ item, action }: Props) {
   const handleRequest = () => {};
 
   useEffect(() => {}, [blank, store, location, user]);
+  useEffect(() => {}, [user]);
 
   const storeField = () => {
     return <></>;
@@ -102,8 +104,8 @@ export default function Card({ item, action }: Props) {
           </Button>
         </Grid>
       </Grid>
-      {alert && <NotificationWithButton text={resp} setAlert={setAlert} data={new Map([['item', JSON.stringify(item)]])} />}
-      {success && <NotificationSuccess text={resp} setAlert={setSuccess} />}
+      {alert && <NotificationWithButton text={response} setAlert={setAlert} data={new Map([['item', JSON.stringify(item)]])} />}
+      {success && <NotificationSuccess text={response} setAlert={setSuccess} />}
     </>
   );
 }
