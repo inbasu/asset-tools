@@ -10,8 +10,16 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { TextField } from '@mui/material';
 import CircularSpinner from '../../components/spinner';
 import Autocomplete from '@mui/material/Autocomplete';
-import styled from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+
+const HiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'insert(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+});
 
 const actions: Map<string, string> = new Map([
   ['takeback', 'Сдать'],
@@ -35,7 +43,7 @@ export default function Card({ item, action, stores, locations }: Props) {
   const [users, setUsers] = useState<Array<User>>([]);
   const [code, setCode] = useState<string>('');
   const [itreq, setItreq] = useState<string>('');
-  const [blank, setBlank] = useState<File>();
+  const [blank, setBlank] = useState<File | null>(null);
   const [validBlank, setValidBlank] = useState<Boolean>(false);
   const [response, setResponse] = useState<string>('');
   const [alert, setAlert] = useState<Boolean>(false);
@@ -56,8 +64,17 @@ export default function Card({ item, action, stores, locations }: Props) {
     setLoading(false);
   };
 
+  const handleUpload = (file: File | null) => {
+    if (file !== null && file.size / 1024 < 768 && ['.pdf', '.jpg', '.jpeg', '.png'].some((suf) => file.name.endsWith(suf))) {
+      setBlank(file);
+      setValidBlank(true);
+    } else {
+      setValidBlank(false);
+    }
+  };
   useEffect(() => {
     console.log(store);
+    console.log(blank);
   }, [blank, store, location, user]);
   useEffect(() => {}, [user]);
 
@@ -162,6 +179,7 @@ export default function Card({ item, action, stores, locations }: Props) {
           ) : (
             <Button variant="outlined" endIcon={<FileUploadIcon />} component="label" color={validBlank ? 'success' : 'error'} fullWidth>
               {blank ? blank.name : 'Выберите файл'}
+              <HiddenInput type="file" onChange={(event) => handleUpload(event.target.files ? event.target.files[0] : null)} />
             </Button>
           )}
         </Grid>
