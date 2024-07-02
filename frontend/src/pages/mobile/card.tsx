@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import DownloadIcon from '@mui/icons-material/Download';
 import { TextField } from '@mui/material';
+import CircularSpinner from '../../components/spinner';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const actions: Map<string, string> = new Map([
   ['takeback', 'Сдать'],
@@ -19,11 +21,13 @@ const actions: Map<string, string> = new Map([
 type Props = {
   item: Item | undefined;
   action: string;
+  stores: Array<Store>;
+  locations: Array<Location>;
 };
 const l: number = 4;
 
-export default function Card({ item, action }: Props) {
-  const [store, setStore] = useState<Store>();
+export default function Card({ item, action, stores, locations }: Props) {
+  const [store, setStore] = useState<Store | null>();
   const [location, setLocation] = useState<Location>();
   const [user, setUser] = useState<User>();
   const [users, setUsers] = useState<Array<User>>();
@@ -49,11 +53,22 @@ export default function Card({ item, action }: Props) {
     setLoading(false);
   };
 
-  useEffect(() => {}, [blank, store, location, user]);
+  useEffect(() => {
+    console.log(store);
+  }, [blank, store, location, user]);
   useEffect(() => {}, [user]);
 
-  const storeField = () => {
-    return <></>;
+  const StoreField = () => {
+    return (
+      <Autocomplete
+        options={stores}
+        id="store-box"
+        autoHighlight
+        value={store}
+        onChange={(event, value) => setStore(value)}
+        renderInput={(params) => <TextField {...params} label="ТЦ" size="small" />}
+      />
+    );
   };
   const locationField = () => {};
   const userField = () => {};
@@ -96,11 +111,10 @@ export default function Card({ item, action }: Props) {
       <Grid container spacing={1} p={1}>
         <Grid container xs={12}>
           {renderProps()}
-          {action === 'send' ? storeField() : <></>}
         </Grid>
         <Grid item xs={3}>
           {action === 'send' ? (
-            <TextField size="small" label="ТЦ" onChange={(event) => console.log(event)} fullWidth></TextField>
+            StoreField()
           ) : (
             <Button color="secondary" onClick={handleDownload}>
               Скачать бланк
@@ -109,7 +123,7 @@ export default function Card({ item, action }: Props) {
           )}
         </Grid>
         <Grid item xs={6.5}>
-          {action == 'send' ? <TextField size="small" label="Код" onChange={(event) => setCode(event.target.value)} fullWidth></TextField> : <Button></Button>}
+          {action == 'send' ? <TextField size="small" label="Трек код" onChange={(event) => setCode(event.target.value)} fullWidth></TextField> : <Button></Button>}
         </Grid>
         <Grid item xs={2.5}>
           <Button variant="contained" onClick={handleRequest} fullWidth>
@@ -118,6 +132,7 @@ export default function Card({ item, action }: Props) {
           </Button>
         </Grid>
       </Grid>
+      {loading && <CircularSpinner />}
       {alert && <NotificationWithButton text={response} setAlert={setAlert} data={new Map([['item', JSON.stringify(item)]])} />}
       {success && <NotificationSuccess text={response} setAlert={setSuccess} />}
     </>

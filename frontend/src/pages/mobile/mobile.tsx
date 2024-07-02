@@ -32,19 +32,28 @@ export default function Mobile() {
   const user: user = useContext(UserContext);
   const [action, setAction] = useState<string>(''); // make it reducer
   const [querry, setQuerry] = useState<string>('');
-  const [stores, setStores] = useState<Store>();
-  const [locs, setLocks] = useState<Location>();
+  const [stores, setStores] = useState<Array<Store>>([]);
+  const [locations, setLocks] = useState<Array<Location>>([]);
   const [item, setItem] = useState<Item | undefined>();
   const [items, setItems] = useState<Array<Item>>([]);
   const [loading, setLoading] = useState<Boolean>(false);
   const [alert, setAlert] = useState(false);
   const abortControllerRef = useRef<AbortController>();
+  const [trHeight, setTrh] = useState('73px'); // dynamyc bottom row of card
+
+  const handleResize = () => {
+    const h = document.querySelector('#top-row');
+    const trHeight = h ? getComputedStyle(h).getPropertyValue('height') : '73px';
+    setTrh(trHeight);
+    console.log(trHeight);
+  };
 
   useEffect(() => {
     if (user.roles.includes('MCC_RU_INSIGHT_IT_ROLE')) {
       axios.post('/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
       axios.post('/', { itemType: 'Location', iql: 'Name IS NOT empty and "Store" IS NOT empty' }).then((response) => setLocks(response.data));
     }
+    window.addEventListener('resize', handleResize);
     document.title = 'Mobile invent';
   }, []);
 
@@ -67,57 +76,61 @@ export default function Mobile() {
   return (
     <>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 0, margin: 0, height: '96vh', width: '100%' }}>
-        <Grid container sx={{ boxShadow: 8, height: '86vh', width: '84%' }} spacing={1}>
-          <Grid item xs={l} sx={{ borderRight: border, paddingRight: 1, borderBlockEnd: border }}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Выберите действие</InputLabel>
-              <Select label="Выберите действие" value={action} id="action-select" onChange={(event) => setAction(event.target.value)} sx={{ width: '100%' }}>
-                <MenuItem value={'giveaway'}>Выдать по реквесту</MenuItem>
-                {user && <MenuItem value={'giveawayIT'}>Выдать Оборудование</MenuItem>}
-                <MenuItem value={'takeback'}>Сдать</MenuItem>
-                <MenuItem value={'send'}>Переслать</MenuItem>
-              </Select>
-            </FormControl>
+        <Box sx={{ boxShadow: 8, height: '86vh', width: '84%' }}>
+          <Grid container xs={12} borderBottom={border} id="top-row">
+            <Grid item xs={l} p={1} sx={{ borderRight: border }}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Выберите действие</InputLabel>
+                <Select label="Выберите действие" value={action} id="action-select" onChange={(event) => setAction(event.target.value)} sx={{ width: '100%' }}>
+                  <MenuItem value={'giveaway'}>Выдать по реквесту</MenuItem>
+                  {user && <MenuItem value={'giveawayIT'}>Выдать Оборудование</MenuItem>}
+                  <MenuItem value={'takeback'}>Сдать</MenuItem>
+                  <MenuItem value={'send'}>Переслать</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12 - l} p={1}>
+              <TextField
+                id="search-field"
+                fullWidth
+                label={action ? searchLabels.get(action) : ''}
+                value={querry}
+                onChange={(event) => setQuerry(event.target.value)}
+                disabled={action == 'send' || !action}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12 - l} pr={1} sx={{ borderBlockEnd: border }}>
-            <TextField
-              id="search-field"
-              fullWidth
-              label={action ? searchLabels.get(action) : ''}
-              value={querry}
-              onChange={(event) => setQuerry(event.target.value)}
-              disabled={action == 'send' || !action}
-            />
-          </Grid>
-          <Grid xs={l} sx={{ borderRight: border }}>
-            <Table>
-              {[...items].map((item: Item) => {
-                return (
-                  <TableRow onClick={() => setItem(item)} sx={{ background: '#D3D3D3', '&:hover': { background: '' } }}>
-                    <Grid container>
-                      <Grid item xs={12}>
-                        item.Name
+          <Grid container sx={{ height: `calc(86vh - ${trHeight})` }}>
+            <Grid item xs={l} sx={{ borderRight: border, overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, '&-ms-overflow-style': { display: 'none' } }}>
+              <Table>
+                {[...items].map((item: Item) => {
+                  return (
+                    <TableRow onClick={() => setItem(item)} sx={{ background: '#D3D3D3', '&:hover': { background: '' } }}>
+                      <Grid container>
+                        <Grid item xs={12}>
+                          item.Name
+                        </Grid>
+                        {resultProps.map((prop) => {
+                          if (item.prop) {
+                            return (
+                              <Grid container spacing={1}>
+                                <Grid>{prop}</Grid>
+                                <Grid>{item[prop]}</Grid>
+                              </Grid>
+                            );
+                          }
+                        })}
                       </Grid>
-                      {resultProps.map((prop) => {
-                        if (item.prop) {
-                          return (
-                            <Grid container spacing={1}>
-                              <Grid>{prop}</Grid>
-                              <Grid>{item[prop]}</Grid>
-                            </Grid>
-                          );
-                        }
-                      })}
-                    </Grid>
-                  </TableRow>
-                );
-              })}
-            </Table>
+                    </TableRow>
+                  );
+                })}
+              </Table>
+            </Grid>
+            <Grid item xs={12 - l}>
+              <Card item={item} action={action} stores={stores} locations={locations} />
+            </Grid>
           </Grid>
-          <Grid item xs={12 - l}>
-            <Card item={item} action={action} />
-          </Grid>
-        </Grid>
+        </Box>
         {loading && <CircularSpinner />}
         {alert && (
           <NotificationWithButton
