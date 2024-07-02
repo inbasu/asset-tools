@@ -10,6 +10,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { TextField } from '@mui/material';
 import CircularSpinner from '../../components/spinner';
 import Autocomplete from '@mui/material/Autocomplete';
+import styled from '@mui/material/styles';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 const actions: Map<string, string> = new Map([
   ['takeback', 'Сдать'],
@@ -27,13 +29,14 @@ type Props = {
 const l: number = 4;
 
 export default function Card({ item, action, stores, locations }: Props) {
-  const [store, setStore] = useState<Store | null>();
-  const [location, setLocation] = useState<Location>();
-  const [user, setUser] = useState<User>();
-  const [users, setUsers] = useState<Array<User>>();
+  const [store, setStore] = useState<Store | null>(null);
+  const [location, setLocation] = useState<Location | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<Array<User>>([]);
   const [code, setCode] = useState<string>('');
   const [itreq, setItreq] = useState<string>('');
-  const [blank, setBlank] = useState();
+  const [blank, setBlank] = useState<File>();
+  const [validBlank, setValidBlank] = useState<Boolean>(false);
   const [response, setResponse] = useState<string>('');
   const [alert, setAlert] = useState<Boolean>(false);
   const [success, setSuccess] = useState<Boolean>(false);
@@ -58,15 +61,15 @@ export default function Card({ item, action, stores, locations }: Props) {
   }, [blank, store, location, user]);
   useEffect(() => {}, [user]);
 
-  const StoreField = () => {
+  const AutocompliteField = (items: Array<Store | Location | User>, value: User | Store | Location | null, setValue: Function, label: string) => {
     return (
       <Autocomplete
-        options={stores}
+        options={items}
         id="store-box"
         autoHighlight
-        value={store}
-        onChange={(event, value) => setStore(value)}
-        renderInput={(params) => <TextField {...params} label="ТЦ" size="small" />}
+        value={value}
+        onChange={(event, value) => setValue(value)}
+        renderInput={(params) => <TextField {...params} fullWidth label={label} size="small" />}
       />
     );
   };
@@ -109,12 +112,43 @@ export default function Card({ item, action, stores, locations }: Props) {
   return (
     <>
       <Grid container spacing={1} p={1}>
-        <Grid container xs={12}>
+        <Grid container xs={12} spacing={1} p={1}>
           {renderProps()}
+
+          {action == 'giveawayIT' ? (
+            <>
+              <Grid item xs={3} sx={{}}>
+                Store
+              </Grid>
+              <Grid item xs={8}>
+                {AutocompliteField(stores, store, setStore, '')}
+              </Grid>
+              <Grid item xs={3} sx={{}}>
+                Location
+              </Grid>
+              <Grid item xs={8}>
+                {AutocompliteField(locations, location, setLocation, '')}
+              </Grid>
+              <Grid item xs={3} sx={{}}>
+                User
+              </Grid>
+              <Grid item xs={8}>
+                {AutocompliteField(users, user, setUser, '')}
+              </Grid>
+              <Grid item xs={3} sx={{}}>
+                ITREQ
+              </Grid>
+              <Grid item xs={8}>
+                <TextField size="small" onChange={(event) => setItreq(event.target.value)} fullWidth type="number" />
+              </Grid>
+            </>
+          ) : (
+            ''
+          )}
         </Grid>
         <Grid item xs={3}>
           {action === 'send' ? (
-            StoreField()
+            AutocompliteField(stores, store, setStore, 'ТЦ')
           ) : (
             <Button color="secondary" onClick={handleDownload}>
               Скачать бланк
@@ -122,8 +156,14 @@ export default function Card({ item, action, stores, locations }: Props) {
             </Button>
           )}
         </Grid>
-        <Grid item xs={6.5}>
-          {action == 'send' ? <TextField size="small" label="Трек код" onChange={(event) => setCode(event.target.value)} fullWidth></TextField> : <Button></Button>}
+        <Grid item xs={6}>
+          {action == 'send' ? (
+            <TextField size="small" label="Трек код" onChange={(event) => setCode(event.target.value)} fullWidth></TextField>
+          ) : (
+            <Button variant="outlined" endIcon={<FileUploadIcon />} component="label" color={validBlank ? 'success' : 'error'} fullWidth>
+              {blank ? blank.name : 'Выберите файл'}
+            </Button>
+          )}
         </Grid>
         <Grid item xs={2.5}>
           <Button variant="contained" onClick={handleRequest} fullWidth>
