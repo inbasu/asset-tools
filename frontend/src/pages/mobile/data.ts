@@ -19,17 +19,20 @@ export interface Item {
 export interface Store {
     Key: string;
     Name: string;
+    [key: string]: any;
 }
 
 export interface Location {
     Key: string;
     Name: string;
-    Store: Array<Store>;
+    Store: Array<string>;
+    [key: string]: any;
 }
 
 export interface User {
     Key: string;
     'ФИО': string;
     Email: string;
-    Store: string
+    "Store Insight": string;
+    [key: string]: any;
 }

@@ -1,6 +1,6 @@
 import NotificationWithButton from '../../components/notifications/alertWithButton';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Item, Store, Location, User } from './data';
 import NotificationSuccess from '../../components/notifications/allGood';
 import Grid from '@mui/material/Grid';
@@ -33,13 +33,36 @@ type Props = {
   action: string;
   stores: Array<Store>;
   locations: Array<Location>;
+  handleParentItem: Function;
 };
 const l: number = 4;
 
-export default function Card({ item, action, stores, locations }: Props) {
-  const [store, setStore] = useState<Store | null>(null);
-  const [location, setLocation] = useState<Location | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+const getLocation = (items: Array<Location>, name: any) => {
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].Name === name) {
+      return items[i];
+    }
+  }
+};
+const getStore = (items: Array<Store>, name: any) => {
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].Name === name) {
+      return items[i];
+    }
+  }
+};
+
+const getUser = (users: Array<User>, user: string) => {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].Email === user) {
+      return users[i];
+    }
+  }
+};
+export default function Card({ item, action, stores, locations, handleParentItem }: Props) {
+  const [store, setStore] = useState<string | null>(null);
+  const [location, setLocation] = useState<string | null>(null);
+  const [user, setUser] = useState<string | null>(null);
   const [users, setUsers] = useState<Array<User>>([]);
   const [code, setCode] = useState<string>('');
   const [itreq, setItreq] = useState<string>('');
@@ -50,18 +73,31 @@ export default function Card({ item, action, stores, locations }: Props) {
   const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [canBeSend, setCanBeSend] = useState<boolean>(false);
+  const abortControlerRef = useRef<AbortController>();
 
   const handleDownload = () => {};
   const handleRequest = () => {
+    const selectedStore = store ? getStore(stores, store) : '';
+    const selectedLocation = location ? getLocation(locations, location) : '';
+    const selectUser = user ? getUser(users, user) : '';
     setLoading(true);
     var formData = new FormData();
     formData.append('blank', blank ? blank : '');
-    formData.append('store', store ? store.Key : '');
-    formData.append('location', location ? location.Key : '');
+    formData.append('store', selectedStore ? selectedStore.Key : '');
+    formData.append('location', selectedLocation ? selectedLocation.Key : '');
     formData.append('code', code);
-    formData.append('user', user ? user.Key : '');
+    formData.append('user', selectUser ? selectUser.Key : '');
     formData.append('itreq', itreq);
-    axios.post('/', formData);
+    axios.post('/mobile/handle_user_action/', formData).then((response) => {
+      if (response.data.error) {
+        setResponse(response.data.error);
+        setAlert(true);
+      } else {
+        setResponse(response.data.result);
+        setSuccess(true);
+      }
+      handleParentItem(item);
+    });
     setLoading(false);
   };
 
@@ -74,49 +110,55 @@ export default function Card({ item, action, stores, locations }: Props) {
     }
   };
   useEffect(() => {
-    if (validBlank) {
+    if ((action === 'send' && store) || ((action === 'takeback' || action === 'giveaway') && validBlank) || (action === 'giveawayIT' && store && location && user)) {
       setCanBeSend(true);
     } else {
       setCanBeSend(false);
     }
   }, [blank, store, location, user]);
-  useEffect(() => {}, [user]);
+  useEffect(() => {
+    if (abortControlerRef.current) {
+      abortControlerRef.current.abort();
+    }
+    const controller = (abortControlerRef.current = new AbortController());
+    const signal = controller.signal;
+    const iql: string = `"Email" LIKE ${user?.split(' | ')[-1]} OR "ФИО"${user?.split(' | ')[-1]} LIKE AND "Status" = "Active"`;
+    axios.post('/mobile/it_iql/', { iql: iql, item_type: 'AD_User' }, { signal: signal }).then((response) => setUsers(response.data));
+  }, [user]);
 
-  const AutocompliteField = (items: Array<Store | Location | User>, value: User | Store | Location | null, setValue: Function, label: string) => {
+  const AutocompliteField = (items: Array<string> | undefined, value: string | null, setValue: Function, label: string) => {
     return (
       <Autocomplete
-        options={items}
+        options={items ? items : []}
         id="store-box"
         autoHighlight
-        value={value}
-        onChange={(event, value) => setValue(value)}
+        value={value ? value : ''}
+        onChange={(_, value) => setValue(value)}
         renderInput={(params) => <TextField {...params} fullWidth label={label} size="small" />}
       />
     );
   };
-  const locationField = () => {};
-  const userField = () => {};
 
   const renderProps = () => {
     var props: Array<string> = [];
     switch (action) {
       case 'giveaway':
-        props = [];
+        props = ['INV No и модель', '.inv', 'Store', 'Комментарий', 'For user'];
         break;
-      case 'gieawayIT':
-        props = [];
+      case 'giveawayIT':
+        props = ['INV No', 'Serial No', 'Model', 'State'];
         break;
       case 'takeback':
-        props = [];
+        props = ['INV No', 'Serial No', 'Model', 'State', 'Location', 'User'];
         break;
       case 'send':
-        props = [];
+        props = ['INV No', 'Serial No', 'Model', 'State', 'Store', 'Location'];
     }
     return (
       <>
         {props.map((prop) => {
           return (
-            <Grid container>
+            <Grid container p={2}>
               <Grid item xs={l}>
                 {prop}
               </Grid>
@@ -133,43 +175,53 @@ export default function Card({ item, action, stores, locations }: Props) {
   return (
     <>
       <Grid container spacing={1} p={1}>
-        <Grid container xs={12} spacing={1} p={1}>
-          {renderProps()}
-
-          {action == 'giveawayIT' ? (
-            <>
-              <Grid item xs={3} sx={{}}>
-                Store
-              </Grid>
-              <Grid item xs={8}>
-                {AutocompliteField(stores, store, setStore, '')}
-              </Grid>
-              <Grid item xs={3} sx={{}}>
-                Location
-              </Grid>
-              <Grid item xs={8}>
-                {AutocompliteField(locations, location, setLocation, '')}
-              </Grid>
-              <Grid item xs={3} sx={{}}>
-                User
-              </Grid>
-              <Grid item xs={8}>
-                {AutocompliteField(users, user, setUser, '')}
-              </Grid>
-              <Grid item xs={3} sx={{}}>
-                ITREQ
-              </Grid>
-              <Grid item xs={8}>
-                <TextField size="small" onChange={(event) => setItreq(event.target.value)} fullWidth type="number" />
-              </Grid>
-            </>
-          ) : (
-            ''
-          )}
+        <Grid item xs={12}>
+          <b>{item ? item.Name : ''}</b>
         </Grid>
+        {renderProps()}
+        {action == 'giveawayIT' ? (
+          <Grid container p={2} spacing={1}>
+            <Grid item xs={l} sx={{}}>
+              Store
+            </Grid>
+            <Grid item xs={11.5 - l}>
+              {AutocompliteField(location ? getLocation(locations, location)?.Store : stores.map((s) => s.Name), store, setStore, '')}
+            </Grid>
+            <Grid item xs={l} sx={{}}>
+              Location
+            </Grid>
+            <Grid item xs={11.5 - l}>
+              {AutocompliteField(store ? locations.flatMap((l) => (l.Store.includes(store) ? l.Name : [])) : locations.map((l) => l.Name), location, setLocation, '')}
+            </Grid>
+            <Grid item xs={l} sx={{}}>
+              User
+            </Grid>
+            <Grid item xs={11.5 - l}>
+              {AutocompliteField(
+                users.map((u) => `${u['Store Insight']} | ${u['ФИО']} | ${u.Email}`),
+                user,
+                setUser,
+                ''
+              )}
+            </Grid>
+            <Grid item xs={l} sx={{}}>
+              ITREQ
+            </Grid>
+            <Grid item xs={11.5 - l}>
+              <TextField size="small" onChange={(event) => setItreq(event.target.value)} fullWidth type="number" />
+            </Grid>
+          </Grid>
+        ) : (
+          ''
+        )}
         <Grid item xs={3}>
           {action === 'send' ? (
-            AutocompliteField(stores, store, setStore, 'ТЦ')
+            AutocompliteField(
+              stores.map((s) => s.Name),
+              store,
+              setStore,
+              'ТЦ'
+            )
           ) : (
             <Button color="secondary" onClick={handleDownload}>
               Скачать бланк

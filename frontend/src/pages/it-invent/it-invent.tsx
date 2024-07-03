@@ -3,7 +3,7 @@ import { useEffect, useState, Fragment, ChangeEvent } from 'react';
 // import axios from "axios";
 import CircularSpinner from '../../components/spinner';
 import { Invent, Item, Report, Printer, reports, filters, filterItems } from './data';
-import { test_items } from './test';
+import { test_items } from '../../test_data/test';
 // MUI
 import Box from '@mui/material/Box';
 import Select, { SelectChangeEvent } from '@mui/material/Select';

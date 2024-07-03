@@ -3,6 +3,10 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { Item, Store, Location } from './data';
 import Card from './card';
 import axios from 'axios';
+// test
+// import { test_items } from '../../test_data/test';
+// import { theStores } from '../../test_data/stores';
+// import { theLocations } from '../../test_data/locations';
 // MUI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,6 +19,8 @@ import NotificationWithButton from '../../components/notifications/alertWithButt
 import CircularSpinner from '../../components/spinner';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import { IconButton, TableCell } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const l: number = 3.5;
 const border: string = 'solid #D3D3D3 1px';
@@ -25,7 +31,7 @@ const searchLabels: Map<string, string> = new Map([
   ['send', ''],
 ]);
 
-const resultProps: Array<string> = [];
+const resultProps: Array<string> = ['INV No', 'Serial No', 'User'];
 // import Box from '@mui/material/Box';
 
 export default function Mobile() {
@@ -33,8 +39,8 @@ export default function Mobile() {
   const [action, setAction] = useState<string>(''); // make it reducer
   const [querry, setQuerry] = useState<string>('');
   const [stores, setStores] = useState<Array<Store>>([]);
-  const [locations, setLocks] = useState<Array<Location>>([]);
-  const [item, setItem] = useState<Item | undefined>();
+  const [locations, setLocations] = useState<Array<Location>>([]);
+  const [item, setItem] = useState<Item | null>(null);
   const [items, setItems] = useState<Array<Item>>([]);
   const [loading, setLoading] = useState<Boolean>(false);
   const [alert, setAlert] = useState(false);
@@ -47,17 +53,25 @@ export default function Mobile() {
     setTrh(trHeight);
     console.log(trHeight);
   };
+  const handleResetItems = (item: Item) => {
+    const newitems: Array<Item> = items.filter((i) => i !== item);
+    setItems(newitems);
+  };
 
   useEffect(() => {
     if (user.roles.includes('MCC_RU_INSIGHT_IT_ROLE')) {
-      axios.post('https://asset-tool.metro-cc/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
-      axios.post('https://asset-tool.metro-cc/mobile/it_iql/', { itemType: 'Location', iql: 'Name IS NOT empty and "Store" IS NOT empty' }).then((response) => setLocks(response.data));
+      axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
+      axios.post('/mobile/it_iql/', { itemType: 'Location', iql: 'Name IS NOT empty and "Store" IS NOT empty' }).then((response) => setLocations(response.data));
     }
+    // setItems(test_items);
+    // setStores(theStores);
+    // setLocations(theLocations);
     window.addEventListener('resize', handleResize);
     document.title = 'Mobile invent';
   }, []);
 
   useEffect(() => {
+    setItem(null);
     if (abortControllerRef && abortControllerRef.current) {
       abortControllerRef.current?.abort('');
     }
@@ -65,16 +79,21 @@ export default function Mobile() {
     if (querry.length > 3) {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
-      axios.post(`https://asset-tool.metro-cc.ru/mobile/${action}`, { querry: querry }, { signal: signal }).then((response) => {
+      axios.post(`/mobile/${action}/`, { querry: querry }, { signal: signal }).then((response) => {
         response.data.result ? setItems(response.data.result) : setAlert(true);
       });
     } else if (action === 'send') {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
-      axios.post('https://asset-tool.metro-cc.ru/mobile/send', { signal: signal }).then((respponse) => setItems(respponse.data));
-      axios.post('https://asset-tool.metro-cc/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
+      axios.post('/mobile/send', { signal: signal }).then((respponse) => setItems(respponse.data));
+      axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
+    } else {
+      setItem(null);
+      setItems([]);
     }
     setLoading(false);
+
+    // setItems(test_items);
   }, [querry, action]);
 
   return (
@@ -105,33 +124,44 @@ export default function Mobile() {
             </Grid>
           </Grid>
           <Grid container sx={{ height: `calc(86vh - ${trHeight})` }}>
-            <Grid item xs={l} sx={{ borderRight: border, overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, '&-ms-overflow-style': { display: 'none' } }}>
-              <Table>
-                {[...items].map((item: Item) => {
+            <Grid
+              item
+              xs={l}
+              sx={{ height: '100%', borderRight: border, overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' }, '&-ms-overflow-style': { display: 'none' } }}
+            >
+              <Table size="small">
+                {[...items].map((cItem: Item) => {
                   return (
-                    <TableRow onClick={() => setItem(item)} sx={{ background: '#D3D3D3', '&:hover': { background: '' } }}>
-                      <Grid container>
-                        <Grid item xs={12}>
-                          item.Name
+                    <TableRow onClick={() => setItem(cItem)} sx={{ background: item === cItem ? '#CCCCCC' : '', '&:hover': { background: '#7CB9FF' } }}>
+                      <TableCell>
+                        <Grid container>
+                          <Grid item xs={12}>
+                            <b>{cItem.Name}</b>
+                          </Grid>
+                          {resultProps.map((prop) => {
+                            if (cItem[prop]) {
+                              return (
+                                <Grid container>
+                                  <Grid xs={4}>{prop}:</Grid>
+                                  <Grid xs={8}>{cItem[prop]}</Grid>
+                                </Grid>
+                              );
+                            }
+                          })}
                         </Grid>
-                        {resultProps.map((prop) => {
-                          if (item.prop) {
-                            return (
-                              <Grid container spacing={1}>
-                                <Grid>{prop}</Grid>
-                                <Grid>{item[prop]}</Grid>
-                              </Grid>
-                            );
-                          }
-                        })}
-                      </Grid>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
               </Table>
             </Grid>
-            <Grid item xs={12 - l}>
-              <Card item={item} action={action} stores={stores} locations={locations} />
+            <Grid item xs={12 - l} position={'relative'}>
+              {item && (
+                <IconButton onClick={() => setItem(null)} sx={{ position: 'absolute', left: '95%' }}>
+                  <CloseIcon />
+                </IconButton>
+              )}
+              {item && <Card item={item} action={action} stores={stores} locations={locations} handleParentItem={handleResetItems} />}
             </Grid>
           </Grid>
         </Box>
