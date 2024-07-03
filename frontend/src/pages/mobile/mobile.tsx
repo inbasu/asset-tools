@@ -50,8 +50,8 @@ export default function Mobile() {
 
   useEffect(() => {
     if (user.roles.includes('MCC_RU_INSIGHT_IT_ROLE')) {
-      axios.post('/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
-      axios.post('/', { itemType: 'Location', iql: 'Name IS NOT empty and "Store" IS NOT empty' }).then((response) => setLocks(response.data));
+      axios.post('https://asset-tool.metro-cc/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
+      axios.post('https://asset-tool.metro-cc/mobile/it_iql/', { itemType: 'Location', iql: 'Name IS NOT empty and "Store" IS NOT empty' }).then((response) => setLocks(response.data));
     }
     window.addEventListener('resize', handleResize);
     document.title = 'Mobile invent';
@@ -65,10 +65,14 @@ export default function Mobile() {
     if (querry.length > 3) {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
-      axios.post('', { querry: querry }, { signal: signal }).then((response) => {
+      axios.post(`https://asset-tool.metro-cc.ru/mobile/${action}`, { querry: querry }, { signal: signal }).then((response) => {
         response.data.result ? setItems(response.data.result) : setAlert(true);
       });
     } else if (action === 'send') {
+      const controller = (abortControllerRef.current = new AbortController());
+      const signal = controller.signal;
+      axios.post('https://asset-tool.metro-cc.ru/mobile/send', { signal: signal }).then((respponse) => setItems(respponse.data));
+      axios.post('https://asset-tool.metro-cc/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
     }
     setLoading(false);
   }, [querry, action]);
