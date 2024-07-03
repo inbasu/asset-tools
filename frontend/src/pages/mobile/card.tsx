@@ -46,9 +46,10 @@ export default function Card({ item, action, stores, locations }: Props) {
   const [blank, setBlank] = useState<File | null>(null);
   const [validBlank, setValidBlank] = useState<Boolean>(false);
   const [response, setResponse] = useState<string>('');
-  const [alert, setAlert] = useState<Boolean>(false);
-  const [success, setSuccess] = useState<Boolean>(false);
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [alert, setAlert] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [canBeSend, setCanBeSend] = useState<boolean>(false);
 
   const handleDownload = () => {};
   const handleRequest = () => {
@@ -73,8 +74,11 @@ export default function Card({ item, action, stores, locations }: Props) {
     }
   };
   useEffect(() => {
-    console.log(store);
-    console.log(blank);
+    if (validBlank) {
+      setCanBeSend(true);
+    } else {
+      setCanBeSend(false);
+    }
   }, [blank, store, location, user]);
   useEffect(() => {}, [user]);
 
@@ -184,7 +188,7 @@ export default function Card({ item, action, stores, locations }: Props) {
           )}
         </Grid>
         <Grid item xs={2.5}>
-          <Button variant="contained" onClick={handleRequest} fullWidth>
+          <Button variant="contained" onClick={handleRequest} fullWidth disabled={!canBeSend}>
             {actions.get(action)}
             <SendIcon />
           </Button>
