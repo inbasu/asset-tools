@@ -52,6 +52,17 @@ const getStore = (items: Array<Store>, name: any) => {
   }
 };
 
+const getLocationStores = (items: Array<Location>, name: string) => {
+  const location = getLocation(items, name);
+  if (typeof location?.Store === 'string') {
+    return new Array(location.Store);
+  } else if (Array.isArray(location?.Store)) {
+    return location.Store;
+  } else {
+    return new Array<string>();
+  }
+};
+
 const getUser = (users: Array<User>, user: string) => {
   for (let i = 0; i < users.length; i++) {
     if (users[i].Email === user) {
@@ -210,13 +221,18 @@ export default function Card({ item, action, stores, locations, handleParentItem
               Store
             </Grid>
             <Grid item xs={11.5 - l}>
-              {AutocompliteField(location ? getLocation(locations, location)?.Store : stores.map((s) => s.Name), store, setStore, '')}
+              {AutocompliteField(location ? getLocationStores(locations, location) : stores.map((s) => s.Name), store, setStore, '')}
             </Grid>
             <Grid item xs={l} sx={{}}>
               Location
             </Grid>
             <Grid item xs={11.5 - l}>
-              {AutocompliteField(store ? locations.flatMap((l) => (l.Store?.includes(store) ? l.Name : [])) : locations.map((l) => l.Name), location, setLocation, '')}
+              {AutocompliteField(
+                locations.map((l) => l.Name),
+                location,
+                setLocation,
+                ''
+              )}
             </Grid>
             <Grid item xs={l} sx={{}}>
               User

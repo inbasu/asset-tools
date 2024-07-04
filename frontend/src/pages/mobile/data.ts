@@ -25,7 +25,7 @@ export interface Store {
 export interface Location {
     Key: string;
     Name: string;
-    Store: Array<string>;
+    Store: Array<string> | string;
     [key: string]: any;
 }
 
