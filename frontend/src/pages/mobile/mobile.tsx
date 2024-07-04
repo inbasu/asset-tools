@@ -85,13 +85,13 @@ export default function Mobile() {
       abortControllerRef.current?.abort('');
     }
     setLoading(true);
-    if ((querry.length > 3 && action !== 'giveawayIT') || (action === 'giveaway' && querry.toLowerCase().startsWith('itreq') && querry.length > 11)) {
+    if ((querry.length > 3 && action !== 'giveaway') || (action === 'giveaway' && querry.toLowerCase().startsWith('itreq') && querry.length > 11)) {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
       axios
         .post(`/mobile/${action}/`, { querry: querry }, { signal: signal })
         .then((response) => {
-          response.data.result.lenght ? setItems(response.data.result) : setAlert(true);
+          response.data.result.lenght !== 0 ? setItems(response.data.result) : setAlert(true);
         })
         .finally(() => setLoading(false));
     } else if (action === 'send') {
