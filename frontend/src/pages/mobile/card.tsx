@@ -168,7 +168,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
     var props: Array<string> = [];
     switch (action) {
       case 'giveaway':
-        props = ['INV No и модель', '.inv', 'Store', 'Комментарий', 'For user'];
+        props = ['Инв No и модель', 'inv.', 'Store', 'Комментарий', 'For user'];
         break;
       case 'giveawayIT':
         props = ['INV No', 'Serial No', 'Model', 'State'];
@@ -216,7 +216,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
               Location
             </Grid>
             <Grid item xs={11.5 - l}>
-              {AutocompliteField(store ? locations.filter((l) => l.Store?.includes(store)).map((l) => l.Name) : locations.map((l) => l.Name), location, setLocation, '')}
+              {AutocompliteField(store ? locations.flatMap((l) => (l.Store?.includes(store) ? l.Name : [])) : locations.map((l) => l.Name), location, setLocation, '')}
             </Grid>
             <Grid item xs={l} sx={{}}>
               User

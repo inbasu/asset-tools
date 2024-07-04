@@ -70,6 +70,7 @@ export default function Mobile() {
   }, []);
 
   useEffect(() => {
+    console.log(locations);
     setItem(null);
     setItems([]);
     setQuerry('');
