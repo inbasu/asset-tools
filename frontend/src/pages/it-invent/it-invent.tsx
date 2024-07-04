@@ -69,7 +69,7 @@ export default function ItInvent() {
   };
 
   const handlePrint = () => {
-    axios.post('/', { printer: printer?.name, items: [...toPrint] });
+    axios.post('/test', { printer: printer?.name, items: [...toPrint] });
     console.log(toPrint.size);
   };
 
@@ -81,8 +81,8 @@ export default function ItInvent() {
   // effects
   useEffect(() => {
     setLoad(true);
-    // axios.get('/').then((response) => setPrinters(response.data));
-    // axios.get('/').then((response) => setInvents(response.data));
+    axios.get('/').then((response) => setPrinters(response.data));
+    axios.post('/').then((response) => setInvents(response.data));
     setInvents(invs);
     invs.sort((a, b) => (a.store < b.store ? -1 : 0));
     document.title = 'IT invent';

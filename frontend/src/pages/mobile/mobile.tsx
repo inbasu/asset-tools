@@ -76,22 +76,28 @@ export default function Mobile() {
       abortControllerRef.current?.abort('');
     }
     setLoading(true);
-    if (querry.length > 3) {
+    if ((querry.length > 3 && action !== 'giveawayIT') || (action === 'giveawayIT' && querry.toLowerCase().startsWith('itreq') && querry.length > 11)) {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
-      axios.post(`/mobile/${action}/`, { querry: querry }, { signal: signal }).then((response) => {
-        response.data.result ? setItems(response.data.result) : setAlert(true);
-      });
+      axios
+        .post(`/mobile/${action}/`, { querry: querry }, { signal: signal })
+        .then((response) => {
+          response.data.result ? setItems(response.data.result) : setAlert(true);
+        })
+        .finally(() => setLoading(false));
     } else if (action === 'send') {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
-      axios.post('/mobile/send', { signal: signal }).then((respponse) => setItems(respponse.data));
+      axios
+        .post('/mobile/send', { signal: signal })
+        .then((respponse) => setItems(respponse.data))
+        .finally(() => setLoading(false));
       axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
     } else {
       setItem(null);
       setItems([]);
+      setLoading(false);
     }
-    setLoading(false);
 
     // setItems(test_items);
   }, [querry, action]);
@@ -106,7 +112,7 @@ export default function Mobile() {
                 <InputLabel id="demo-simple-select-label">Выберите действие</InputLabel>
                 <Select label="Выберите действие" value={action} id="action-select" onChange={(event) => setAction(event.target.value)} sx={{ width: '100%' }}>
                   <MenuItem value={'giveaway'}>Выдать по реквесту</MenuItem>
-                  {user && <MenuItem value={'giveawayIT'}>Выдать Оборудование</MenuItem>}
+                  {user.roles.includes('MCC_RU_INSIGHT_IT_ROLE') && <MenuItem value={'giveawayIT'}>Выдать Оборудование</MenuItem>}
                   <MenuItem value={'takeback'}>Сдать</MenuItem>
                   <MenuItem value={'send'}>Переслать</MenuItem>
                 </Select>

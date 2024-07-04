@@ -21,7 +21,6 @@ export interface Report {
 
 export interface Printer {
   name: string;
-  ip: string;
   [key: string]: any;
 }
 

@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import DownloadIcon from '@mui/icons-material/Download';
-import { TextField } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import CircularSpinner from '../../components/spinner';
 import Autocomplete from '@mui/material/Autocomplete';
 import { styled } from '@mui/material/styles';
@@ -60,8 +60,8 @@ const getUser = (users: Array<User>, user: string) => {
   }
 };
 export default function Card({ item, action, stores, locations, handleParentItem }: Props) {
-  const [store, setStore] = useState<string | null>(null);
-  const [location, setLocation] = useState<string | null>(null);
+  const [store, setStore] = useState<string | null>(item ? item.Store : null);
+  const [location, setLocation] = useState<string | null>(item ? item.Location : null);
   const [user, setUser] = useState<string | null>(null);
   const [users, setUsers] = useState<Array<User>>([]);
   const [code, setCode] = useState<string>('');
@@ -73,32 +73,50 @@ export default function Card({ item, action, stores, locations, handleParentItem
   const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [canBeSend, setCanBeSend] = useState<boolean>(false);
+  const [disableDownload, setDisableDownload] = useState<boolean>(false);
   const abortControlerRef = useRef<AbortController>();
 
-  const handleDownload = () => {};
+  const handleDownload = () => {
+    setDisableDownload(true);
+    axios
+      .post('/mobile/download_blank/', { item: item, action: action })
+      .then((response) => response.data)
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${item?.name}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+      })
+      .finally(() => setDisableDownload(false));
+  };
   const handleRequest = () => {
     const selectedStore = store ? getStore(stores, store) : '';
     const selectedLocation = location ? getLocation(locations, location) : '';
     const selectUser = user ? getUser(users, user) : '';
     setLoading(true);
     var formData = new FormData();
-    formData.append('blank', blank ? blank : '');
+    formData.append('file', blank ? blank : '');
     formData.append('store', selectedStore ? selectedStore.Key : '');
     formData.append('location', selectedLocation ? selectedLocation.Key : '');
     formData.append('code', code);
     formData.append('user', selectUser ? selectUser.Key : '');
     formData.append('itreq', itreq);
-    axios.post('/mobile/handle_user_action/', formData).then((response) => {
-      if (response.data.error) {
-        setResponse(response.data.error);
-        setAlert(true);
-      } else {
-        setResponse(response.data.result);
-        setSuccess(true);
-      }
-      handleParentItem(item);
-    });
-    setLoading(false);
+    axios
+      .post('/mobile/handle_user_action/', formData)
+      .then((response) => {
+        if (response.data.error) {
+          setResponse(response.data.error);
+          setAlert(true);
+        } else {
+          setResponse(response.data.result);
+          setSuccess(true);
+        }
+        handleParentItem(item);
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleUpload = (file: File | null) => {
@@ -107,8 +125,15 @@ export default function Card({ item, action, stores, locations, handleParentItem
       setValidBlank(true);
     } else {
       setValidBlank(false);
+      setBlank(null);
     }
   };
+  useEffect(() => {
+    setStore(item ? item.Store : null);
+    setLocation(item ? item.Location : null);
+    setUser(null);
+    setBlank(null);
+  }, [item]);
   useEffect(() => {
     if ((action === 'send' && store) || ((action === 'takeback' || action === 'giveaway') && validBlank) || (action === 'giveawayIT' && store && location && user)) {
       setCanBeSend(true);
@@ -223,7 +248,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
               'ТЦ'
             )
           ) : (
-            <Button color="secondary" onClick={handleDownload}>
+            <Button color="secondary" onClick={handleDownload} disabled={disableDownload}>
               Скачать бланк
               <DownloadIcon />
             </Button>
@@ -233,10 +258,17 @@ export default function Card({ item, action, stores, locations, handleParentItem
           {action == 'send' ? (
             <TextField size="small" label="Трек код" onChange={(event) => setCode(event.target.value)} fullWidth></TextField>
           ) : (
-            <Button variant="outlined" endIcon={<FileUploadIcon />} component="label" color={validBlank ? 'success' : 'error'} fullWidth>
-              {blank ? blank.name : 'Выберите файл'}
-              <HiddenInput type="file" onChange={(event) => handleUpload(event.target.files ? event.target.files[0] : null)} />
-            </Button>
+            <>
+              <Button variant="outlined" endIcon={<FileUploadIcon />} component="label" color={validBlank ? 'success' : 'error'} fullWidth>
+                {blank ? blank.name : 'Выберите файл'}
+                <HiddenInput type="file" onChange={(event) => handleUpload(event.target.files ? event.target.files[0] : null)} />
+              </Button>
+              {!validBlank && (
+                <Typography textAlign={'center'} variant="subtitle2" color={'error'}>
+                  Файл в формате .pdf размером менее 0.5мб
+                </Typography>
+              )}
+            </>
           )}
         </Grid>
         <Grid item xs={2.5}>
