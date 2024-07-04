@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 
 // define buttons and there viasability permission here
 const mainButtons: Array<mBtn> = [
-  { text: 'Учет мобильного оборудования', roles: [], type: 'href', to: '/mobile' },
+  { text: 'Учет мобильного оборудования', roles: [], type: 'link', to: '/mobile' },
   { text: 'Учет IT оборудования', roles: permissions.ItInvent, type: 'link', to: '/?p=it' },
   { text: 'In development', roles: ['MCC_RU_INSIGHT_QA_ROLE'], type: 'link', to: '/?p=dev' },
 ];

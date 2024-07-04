@@ -29,7 +29,7 @@ const searchLabels: Map<string, string> = new Map([
   ['send', ''],
 ]);
 
-const resultProps: Array<string> = ['INV No', 'Serial No', 'User', 'inv.', 'For user'];
+const resultProps: Array<string> = ['INV No', 'Serial No', 'User', 'Инв No и модель', 'For user'];
 // import Box from '@mui/material/Box';
 
 export default function Mobile() {
@@ -51,7 +51,7 @@ export default function Mobile() {
     const trHeight = h ? getComputedStyle(h).getPropertyValue('height') : '73px';
     setTrh(trHeight);
   };
-  const handleResetItems = (item: Item, msg: string) => {
+  const handleResetItems = (msg: string) => {
     const newitems: Array<Item> = items.filter((i) => i !== item);
     setItems(newitems);
     setItem(null);
@@ -156,7 +156,7 @@ export default function Mobile() {
                             <b>{cItem.Name}</b>
                           </Grid>
                           {resultProps.map((prop) => {
-                            if (cItem[prop]) {
+                            if (prop in cItem) {
                               return (
                                 <Grid container>
                                   <Grid xs={4}>{prop}:</Grid>

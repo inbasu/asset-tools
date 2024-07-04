@@ -107,6 +107,8 @@ export default function Card({ item, action, stores, locations, handleParentItem
     const selectUser = user ? getUser(users, user.split(' | ')[user.split(' | ').length - 1]) : '';
     setLoading(true);
     var formData = new FormData();
+    formData.append('action', action);
+    formData.append('item', JSON.stringify(item));
     formData.append('file', blank ? blank : '');
     formData.append('store', selectedStore ? selectedStore.Key : '');
     formData.append('location', selectedLocation ? selectedLocation.Key : '');
