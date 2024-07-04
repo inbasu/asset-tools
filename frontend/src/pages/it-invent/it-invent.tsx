@@ -2,8 +2,8 @@ import { useEffect, useState, Fragment, ChangeEvent } from 'react';
 // import { UserContext, user } from "../App";
 // import axios from "axios";
 import CircularSpinner from '../../components/spinner';
-import { Invent, Item, Report, Printer, reports, filters, filterItems } from './data';
-import { test_items } from '../../test_data/test';
+import { Invent, Item, Report, reports, filters, filterItems } from './data';
+// import { test_items } from '../../test_data/test';
 // MUI
 import Box from '@mui/material/Box';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -40,8 +40,8 @@ export default function ItInvent() {
   const [fields, setFields] = useState<Map<string, boolean>>(filters);
   const [report, setReport] = useState<Report>(reports[0]);
   const [results, setResults] = useState<number>(items.length);
-  const [printers, setPrinters] = useState<Map<string, Printer>>();
-  const [printer, setPrinter] = useState<Printer>();
+  // const [printers, setPrinters] = useState<Map<string, Printer>>();
+  // const [printer, setPrinter] = useState<Printer>();
   const [toPrint, setToPrint] = useState<Set<Item>>(new Set());
 
   // states
@@ -68,10 +68,10 @@ export default function ItInvent() {
     setLoad(false);
   };
 
-  const handlePrint = () => {
-    axios.post('/test', { printer: printer?.name, items: [...toPrint] });
-    console.log(toPrint.size);
-  };
+  // const handlePrint = () => {
+  //   axios.post('/test', { printer: printer?.name, items: [...toPrint] });
+  //   console.log(toPrint.size);
+  // };
 
   const handleToExcel = () => {
     // send shownItems to print
@@ -81,7 +81,7 @@ export default function ItInvent() {
   // effects
   useEffect(() => {
     setLoad(true);
-    axios.get('/').then((response) => setPrinters(response.data));
+    // axios.get('/').then((response) => setPrinters(response.data));
     axios.post('/').then((response) => setInvents(response.data));
     setInvents(invs);
     invs.sort((a, b) => (a.store < b.store ? -1 : 0));
