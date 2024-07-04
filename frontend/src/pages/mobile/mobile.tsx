@@ -101,9 +101,9 @@ export default function Mobile() {
       const signal = controller.signal;
       axios
         .post('/mobile/send/', { signal: signal })
-        .then((respponse) => setItems(respponse.data))
+        .then((respponse) => setItems(respponse.data.result))
         .finally(() => setLoading(false));
-      axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
+      axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data.result));
     } else {
       setItem(null);
       setItems([]);
