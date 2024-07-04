@@ -6,7 +6,7 @@ type Props = {
 
 export default function NotificationSuccess({ text, setAlert }: Props) {
   return (
-    <Alert severity="error" style={{ position: 'absolute', bottom: '15%' }} onClose={() => setAlert(false)}>
+    <Alert severity="success" style={{ position: 'absolute', bottom: '15%' }} onClose={() => setAlert('')}>
       {text}
     </Alert>
   );

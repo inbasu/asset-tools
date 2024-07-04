@@ -1,8 +1,7 @@
 import NotificationWithButton from '../../components/notifications/alertWithButton';
 import axios from 'axios';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, ChangeEvent } from 'react';
 import { Item, Store, Location, User } from './data';
-import NotificationSuccess from '../../components/notifications/allGood';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
@@ -46,7 +45,7 @@ const getLocation = (items: Array<Location>, name: any) => {
 };
 const getStore = (items: Array<Store>, name: any) => {
   for (let i = 0; i < items.length; i++) {
-    if (items[i].Name === name) {
+    if (items[i].Name == name) {
       return items[i];
     }
   }
@@ -73,7 +72,7 @@ const getUser = (users: Array<User>, user: string) => {
 export default function Card({ item, action, stores, locations, handleParentItem }: Props) {
   const [store, setStore] = useState<string | null>(item ? item.Store : null);
   const [location, setLocation] = useState<string | null>(item ? item.Location : null);
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<string>('');
   const [users, setUsers] = useState<Array<User>>([]);
   const [code, setCode] = useState<string>('');
   const [itreq, setItreq] = useState<string>('');
@@ -81,7 +80,6 @@ export default function Card({ item, action, stores, locations, handleParentItem
   const [validBlank, setValidBlank] = useState<Boolean>(false);
   const [response, setResponse] = useState<string>('');
   const [alert, setAlert] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [canBeSend, setCanBeSend] = useState<boolean>(false);
   const [disableDownload, setDisableDownload] = useState<boolean>(false);
@@ -96,7 +94,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
         const url = window.URL.createObjectURL(new Blob([blob]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `${item?.name}.pdf`);
+        link.setAttribute('download', `${item?.Name}.pdf`);
         document.body.appendChild(link);
         link.click();
         link.parentNode?.removeChild(link);
@@ -106,7 +104,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
   const handleRequest = () => {
     const selectedStore = store ? getStore(stores, store) : '';
     const selectedLocation = location ? getLocation(locations, location) : '';
-    const selectUser = user ? getUser(users, user) : '';
+    const selectUser = user ? getUser(users, user.split(' | ')[user.split(' | ').length - 1]) : '';
     setLoading(true);
     var formData = new FormData();
     formData.append('file', blank ? blank : '');
@@ -123,9 +121,8 @@ export default function Card({ item, action, stores, locations, handleParentItem
           setAlert(true);
         } else {
           setResponse(response.data.result);
-          setSuccess(true);
+          handleParentItem(response.data.result);
         }
-        handleParentItem(item);
       })
       .finally(() => setLoading(false));
   };
@@ -139,10 +136,14 @@ export default function Card({ item, action, stores, locations, handleParentItem
       setBlank(null);
     }
   };
+  const handleUser = (event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.target.value.split(' | ');
+    setUser(input[input.length - 1]);
+  };
   useEffect(() => {
     setStore(item ? item.Store : null);
     setLocation(item ? item.Location : null);
-    setUser(null);
+    setUser('');
     setBlank(null);
   }, [item]);
   useEffect(() => {
@@ -156,10 +157,15 @@ export default function Card({ item, action, stores, locations, handleParentItem
     if (abortControlerRef.current) {
       abortControlerRef.current.abort();
     }
-    const controller = (abortControlerRef.current = new AbortController());
-    const signal = controller.signal;
-    const iql: string = `"Email" LIKE ${user?.split(' | ')[-1]} OR "ФИО"${user?.split(' | ')[-1]} LIKE AND "Status" = "Active"`;
-    axios.post('/mobile/it_iql/', { iql: iql, item_type: 'AD_User' }, { signal: signal }).then((response) => setUsers(response.data));
+    if (user.length > 2 && !user.includes('|')) {
+      const controller = (abortControlerRef.current = new AbortController());
+      const signal = controller.signal;
+      axios
+        .post('/mobile/it_iql/', { iql: `"ФИО" LIKE "${user}" OR  "Email" LIKE "${user}" AND "Status" = "Active"`, itemType: 'AD_User' }, { signal: signal })
+        .then((response) => setUsers(response.data));
+    } else if (user.length < 3) {
+      setUsers([]);
+    }
   }, [user]);
 
   const AutocompliteField = (items: Array<string> | undefined, value: string | null, setValue: Function, label: string) => {
@@ -233,12 +239,14 @@ export default function Card({ item, action, stores, locations, handleParentItem
               User
             </Grid>
             <Grid item xs={11.5 - l}>
-              {AutocompliteField(
-                users.map((u) => `${u['Store Insight']} | ${u['ФИО']} | ${u.Email}`),
-                user,
-                setUser,
-                ''
-              )}
+              <Autocomplete
+                options={users ? users.map((u) => `${u['Store Insight']} | ${u['ФИО']} | ${u.Email}`) : []}
+                onChange={(_, value) => setUser(value ? value : '')}
+                value={user}
+                size="small"
+                id="user-box"
+                renderInput={(params) => <TextField {...params} onChange={(event: ChangeEvent<HTMLInputElement>) => handleUser(event)} />}
+              />
             </Grid>
             <Grid item xs={l} sx={{}}>
               ITREQ
@@ -291,7 +299,6 @@ export default function Card({ item, action, stores, locations, handleParentItem
       </Grid>
       {loading && <CircularSpinner />}
       {alert && <NotificationWithButton text={response} setAlert={setAlert} data={new Map([['item', JSON.stringify(item)]])} />}
-      {success && <NotificationSuccess text={response} setAlert={setSuccess} />}
     </>
   );
 }

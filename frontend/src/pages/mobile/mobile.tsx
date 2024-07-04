@@ -3,10 +3,9 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { Item, Store, Location } from './data';
 import Card from './card';
 import axios from 'axios';
-// test
-// import { test_items } from '../../test_data/test';
-// import { theStores } from '../../test_data/stores';
-// import { theLocations } from '../../test_data/locations';
+import NotificationWithButton from '../../components/notifications/alertWithButton';
+import NotificationSuccess from '../../components/notifications/allGood';
+
 // MUI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Table from '@mui/material/Table';
 import TableRow from '@mui/material/TableRow';
-import NotificationWithButton from '../../components/notifications/alertWithButton';
 import CircularSpinner from '../../components/spinner';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -43,6 +41,7 @@ export default function Mobile() {
   const [item, setItem] = useState<Item | null>(null);
   const [items, setItems] = useState<Array<Item>>([]);
   const [loading, setLoading] = useState<Boolean>(false);
+  const [sucMsg, setSucMsg] = useState<string>('');
   const [alert, setAlert] = useState(false);
   const abortControllerRef = useRef<AbortController>();
   const [trHeight, setTrh] = useState('73px'); // dynamyc bottom row of card
@@ -52,9 +51,11 @@ export default function Mobile() {
     const trHeight = h ? getComputedStyle(h).getPropertyValue('height') : '73px';
     setTrh(trHeight);
   };
-  const handleResetItems = (item: Item) => {
+  const handleResetItems = (item: Item, msg: string) => {
     const newitems: Array<Item> = items.filter((i) => i !== item);
     setItems(newitems);
+    setItem(null);
+    setSucMsg(msg);
   };
 
   useEffect(() => {
@@ -62,15 +63,12 @@ export default function Mobile() {
       axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data.result));
       axios.post('/mobile/it_iql/', { itemType: 'Location', iql: 'Name IS NOT empty and "Store" IS NOT empty' }).then((response) => setLocations(response.data.result));
     }
-    // setItems(test_items);
-    // setStores(theStores);
-    // setLocations(theLocations);
+
     window.addEventListener('resize', handleResize);
     document.title = 'Mobile invent';
   }, []);
 
   useEffect(() => {
-    console.log(locations);
     setItem(null);
     setItems([]);
     setQuerry('');
@@ -90,14 +88,19 @@ export default function Mobile() {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
       axios.post(`/mobile/${action}/`, { querry: querry }, { signal: signal }).then((response) => {
-        response.data.result.lenght !== 0 ? setItems(response.data.result) : setAlert(true);
+        setItems(response.data.result);
+        if (!response.data.result) {
+          setAlert(true);
+        } else {
+          setAlert(false);
+        }
         setLoading(false);
       });
     } else if (action === 'send') {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
       axios
-        .post('/mobile/send', { signal: signal })
+        .post('/mobile/send/', { signal: signal })
         .then((respponse) => setItems(respponse.data))
         .finally(() => setLoading(false));
       axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
@@ -180,6 +183,7 @@ export default function Mobile() {
           </Grid>
         </Box>
         {loading && <CircularSpinner />}
+        {sucMsg.length !== 0 && <NotificationSuccess text={sucMsg} setAlert={setSucMsg} />}
         {alert && (
           <NotificationWithButton
             text="По запросу ничего не найдено"
