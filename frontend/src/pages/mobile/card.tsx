@@ -204,7 +204,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
           <b>{item ? item.Name : ''}</b>
         </Grid>
         {renderProps()}
-        {action == 'giveawayIT' ? (
+        {action === 'giveawayIT' && locations && stores ? (
           <Grid container p={2} spacing={1}>
             <Grid item xs={l} sx={{}}>
               Store
@@ -216,7 +216,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
               Location
             </Grid>
             <Grid item xs={11.5 - l}>
-              {AutocompliteField(store ? locations.flatMap((l) => (l.Store.includes(store) ? l.Name : [])) : locations.map((l) => l.Name), location, setLocation, '')}
+              {AutocompliteField(store ? locations.flatMap((l) => (l?.Store.includes(store) ? l.Name : [])) : locations.map((l) => l.Name), location, setLocation, '')}
             </Grid>
             <Grid item xs={l} sx={{}}>
               User

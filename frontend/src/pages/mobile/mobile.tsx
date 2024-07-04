@@ -51,7 +51,6 @@ export default function Mobile() {
     const h = document.querySelector('#top-row');
     const trHeight = h ? getComputedStyle(h).getPropertyValue('height') : '73px';
     setTrh(trHeight);
-    console.log(trHeight);
   };
   const handleResetItems = (item: Item) => {
     const newitems: Array<Item> = items.filter((i) => i !== item);
@@ -72,17 +71,27 @@ export default function Mobile() {
 
   useEffect(() => {
     setItem(null);
+    setItems([]);
+    setQuerry('');
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      setLoading(false);
+    }
+  }, [action]);
+
+  useEffect(() => {
+    setItem(null);
     if (abortControllerRef && abortControllerRef.current) {
       abortControllerRef.current?.abort('');
     }
     setLoading(true);
-    if ((querry.length > 3 && action !== 'giveawayIT') || (action === 'giveawayIT' && querry.toLowerCase().startsWith('itreq') && querry.length > 11)) {
+    if ((querry.length > 3 && action !== 'giveawayIT') || (action === 'giveaway' && querry.toLowerCase().startsWith('itreq') && querry.length > 11)) {
       const controller = (abortControllerRef.current = new AbortController());
       const signal = controller.signal;
       axios
         .post(`/mobile/${action}/`, { querry: querry }, { signal: signal })
         .then((response) => {
-          response.data.result ? setItems(response.data.result) : setAlert(true);
+          response.data.result.lenght ? setItems(response.data.result) : setAlert(true);
         })
         .finally(() => setLoading(false));
     } else if (action === 'send') {
