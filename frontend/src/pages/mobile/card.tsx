@@ -221,7 +221,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
               Store
             </Grid>
             <Grid item xs={11.5 - l}>
-              {AutocompliteField(location ? getLocationStores(locations, location) : stores.map((s) => s.Name), store, setStore, '')}
+              {AutocompliteField([], store, setStore, '')}
             </Grid>
             <Grid item xs={l} sx={{}}>
               Location
