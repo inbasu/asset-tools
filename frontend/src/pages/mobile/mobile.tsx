@@ -59,8 +59,8 @@ export default function Mobile() {
 
   useEffect(() => {
     if (user.roles.includes('MCC_RU_INSIGHT_IT_ROLE')) {
-      axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data));
-      axios.post('/mobile/it_iql/', { itemType: 'Location', iql: 'Name IS NOT empty and "Store" IS NOT empty' }).then((response) => setLocations(response.data));
+      axios.post('/mobile/it_iql/', { itemType: 'Store', iql: 'Name IS NOT empty' }).then((response) => setStores(response.data.result));
+      axios.post('/mobile/it_iql/', { itemType: 'Location', iql: 'Name IS NOT empty and "Store" IS NOT empty' }).then((response) => setLocations(response.data.result));
     }
     // setItems(test_items);
     // setStores(theStores);

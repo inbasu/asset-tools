@@ -221,13 +221,13 @@ export default function Card({ item, action, stores, locations, handleParentItem
               Store
             </Grid>
             <Grid item xs={11.5 - l}>
-              {AutocompliteField([], store, setStore, '')}
+              {AutocompliteField(location ? getLocationStores(locations, location) : stores.map((s) => s.Name), store, setStore, '')}
             </Grid>
             <Grid item xs={l} sx={{}}>
               Location
             </Grid>
             <Grid item xs={11.5 - l}>
-              {AutocompliteField([], location, setLocation, '')}
+              {AutocompliteField(store ? locations.flatMap((l) => (l.Store?.includes(store) ? l.Name : [])) : locations.map((l) => l.Name), location, setLocation, '')}
             </Grid>
             <Grid item xs={l} sx={{}}>
               User
