@@ -29,7 +29,7 @@ const searchLabels: Map<string, string> = new Map([
   ['send', ''],
 ]);
 
-const resultProps: Array<string> = ['INV No', 'Serial No', 'User'];
+const resultProps: Array<string> = ['INV No', 'Serial No', 'User', 'inv.', 'For user'];
 // import Box from '@mui/material/Box';
 
 export default function Mobile() {
