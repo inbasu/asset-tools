@@ -23,16 +23,21 @@ class IDAM:
     ROLES = {
         "MCC_RU_INSIGHT_IT_ROLE",
         "MCC_RU_INSIGHT_IT_INVENTADMIN_ROLE",
-        "MCC_RU_INSIGHT_ACCOUNTANT",
+        "MCC_RU_INSIGHT_ACCOUNTANT_ROLE",
+        "MCC_RU_INSIGHT_QA_ROLE",
+        # MCC_RU_INSIGHT_STORE_ROLE seted in if user got stores in it
     }
 
     url = ""
     __client_id = ""
     __client_secret = ""
-    data = {}
+    data: dict[str, str] = {
+        "redirect_uri": "",
+        "client_id": __client_id,
+        "user_type": "EMP",
+    }
 
     @classmethod
-    @property
     def code_url(cls, **kwargs) -> str:
         data = {"response_type": "code", **cls.data, **kwargs}
         params = [f"{key}={value}" for key, value in data.items()]
@@ -43,14 +48,18 @@ class IDAM:
         url = f"{cls.url}/authorize/api/oauth2/access_token"
         data = {"grant_type": "authoriztion_code", "code": code, **cls.data, **kwargs}
         response = requests.post(
-            url=url, auth=requests.auth.HTTPBasicAuth(cls.__client_id, cls.__client_secret), data=data
+            url=url,
+            auth=requests.auth.HTTPBasicAuth(cls.__client_id, cls.__client_secret),
+            data=data,
         )
         if token := response.json().get("access_token"):
             return token
 
     @classmethod
     def decode_token(cls, token: str) -> dict:
-        return jwt.decode(token, algorithms="HS256", options={"verify_signature": False})
+        return jwt.decode(
+            token, algorithms="HS256", options={"verify_signature": False}
+        )
 
     @classmethod
     def form_user_data(cls, token) -> dict:
@@ -66,7 +75,11 @@ class IDAM:
 
             # get stores from token
             if "MCC_RU_INSIGHT_STORE_ROLE" in role:
-                user["store_role"] = cls.get_user_stores(role["MCC_RU_INSIGHT_STORE_ROLE"])
+                user["store_role"] = cls.get_user_stores(
+                    role["MCC_RU_INSIGHT_STORE_ROLE"]
+                )
+        if user["store_role"]:
+            user["roles"].append("MCC_RU_INSIGHT_STORE_ROLE")
         return user
 
     @classmethod
