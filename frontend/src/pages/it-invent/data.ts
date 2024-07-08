@@ -142,11 +142,9 @@ export const formTillReport = (items: Array<Item>) => {
     if (item.Type) {
       const key = item['Unit_Eq'] ? item["Unit_Eq"] : item.Location
       if (!loc.has(key)) {
-        loc.set(key, new Map([[item.Type, new  Array([item])]]))
-      } else if (!loc.get(key).has(item.Type)) {
-        loc.get(key).set(item.Type, new Array([item]))
+        loc.set(key, new Array([item]))
       } else {
-        loc.get(key).get(item.Type).push(item)
+        loc.get(key).push(item)
       }
     }
   });
