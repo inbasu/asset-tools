@@ -35,17 +35,19 @@ function Row({ loc, items, fields }: Props) {
       </TableRow>
       <TableRow>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          {items.map((item) => {
-            return (
-              <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
-                {[...fields.keys()].map((f) => {
-                  if (fields.get(f)) {
-                    return <TableCell>{item[f]}</TableCell>;
-                  }
-                })}
-              </TableRow>
-            );
-          })}
+          <Table sx={{ width: '100%' }}>
+            {items.map((item) => {
+              return (
+                <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
+                  {[...fields.keys()].map((f) => {
+                    if (fields.get(f)) {
+                      return <TableCell>{item[f]}</TableCell>;
+                    }
+                  })}
+                </TableRow>
+              );
+            })}
+          </Table>
         </Collapse>
       </TableRow>
     </Fragment>
@@ -68,7 +70,7 @@ export default function ReportTable({ items, report, fields }: params) {
   }, [report]);
 
   return (
-    <Table>
+    <Table size="small">
       {(reportItems ? [...reportItems.entries()] : []).map((one) => {
         return <Row fields={fields} items={one[1]} loc={one[0]} />;
       })}
