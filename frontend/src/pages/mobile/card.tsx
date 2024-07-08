@@ -113,7 +113,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
     formData.append('store', JSON.stringify(selectedStore));
     formData.append('location', JSON.stringify(selectedLocation));
     formData.append('code', code);
-    formData.append('user', selectUser ? selectUser.Key : '');
+    formData.append('user', JSON.stringify(selectUser));
     formData.append('itreq', itreq);
     axios
       .post('/mobile/handle_user_action/', formData)
