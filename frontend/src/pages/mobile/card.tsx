@@ -110,8 +110,8 @@ export default function Card({ item, action, stores, locations, handleParentItem
     formData.append('action', action);
     formData.append('item', JSON.stringify(item));
     formData.append('file', blank ? blank : '');
-    formData.append('store', selectedStore ? selectedStore.Key : '');
-    formData.append('location', selectedLocation ? selectedLocation.Key : '');
+    formData.append('store', JSON.stringify(selectedStore));
+    formData.append('location', JSON.stringify(selectedLocation));
     formData.append('code', code);
     formData.append('user', selectUser ? selectUser.Key : '');
     formData.append('itreq', itreq);

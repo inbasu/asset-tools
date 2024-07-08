@@ -89,7 +89,7 @@ export default function Mobile() {
       const signal = controller.signal;
       axios.post(`/mobile/${action}/`, { querry: querry }, { signal: signal }).then((response) => {
         setItems(response.data.result);
-        if (!response.data.result) {
+        if (!response.data.result.lenght) {
           setAlert(true);
         } else {
           setAlert(false);

@@ -1,6 +1,6 @@
 export interface Invent {
-  key: string;
-  store: string;
+  Key: string;
+  InventoryStore: string;
   [key: string]: any;
 }
 export interface Item {

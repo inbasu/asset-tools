@@ -24,11 +24,6 @@ import ItemsTable from './table';
 import Chip from '@mui/material/Chip';
 import axios from 'axios';
 
-const invs: Array<Invent> = [
-  { key: '1', name: '123', store: '1014' },
-  { key: '2', name: '321', store: '1012' },
-];
-
 export default function ItInvent() {
   // const user = useContext<user>(UserContext);
   const [load, setLoad] = useState<Boolean>(false);
@@ -61,8 +56,22 @@ export default function ItInvent() {
   const requestInventItems = () => {
     setLoad(true);
     (async () => {
-      axios.post('/invents', { invented: true, inventory: inventory }).then((response) => setItems(new Array(...items, ...response.data)));
-      axios.post('/invents', { inveted: false, intentory: inventory }).then((response) => setItems(new Array(...items, response.data)));
+      axios.post('/mobile/iql_it/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object HAVING inboundReferences("Inventory" = ${inventory?.Key})` }).then((response) => {
+        const new_items = response.data.result;
+        new_items.forEach((item: Invent) => {
+          item.invented = true;
+        });
+        setItems(new Array(...items, ...new_items));
+      });
+      axios
+        .post('/mobile/iql_it/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object NOT HAVING inboundReferences("Inventory" = ${inventory?.Key})` })
+        .then((response) => {
+          const new_items = response.data.result;
+          new_items.forEach((item: Invent) => {
+            item.invented = false;
+          });
+          setItems(new Array(...items, ...new_items));
+        });
     })();
     setShown(items);
     setLoad(false);
@@ -81,12 +90,11 @@ export default function ItInvent() {
   // effects
   useEffect(() => {
     setLoad(true);
-    // axios.get('/').then((response) => setPrinters(response.data));
-    axios.post('/').then((response) => setInvents(response.data));
-    setInvents(invs);
-    invs.sort((a, b) => (a.store < b.store ? -1 : 0));
+    axios.post('/mobile/it_iql/', { itemType: 'Inventory_IT', iql: '"InventoryStatus" = "Open"' }).then((response) => {
+      setInvents(response.data.result.sort((a: Invent, b: Invent) => (a.InventoryStore < b.InventoryStore ? -1 : 1)));
+      setLoad(false);
+    });
     document.title = 'IT invent';
-    setLoad(false);
   }, []);
 
   useEffect(() => {
@@ -103,7 +111,7 @@ export default function ItInvent() {
           <Select fullWidth size="small" id="inventory-select" value={inventory ? inventory.key : null} onChange={(event) => handleSelectInvent(event)}>
             {invents &&
               invents.map((inv: Invent) => {
-                return <MenuItem value={inv.key}>{inv.store}</MenuItem>;
+                return <MenuItem value={inv.key}>{inv.InventoryStore}</MenuItem>;
               })}
           </Select>
         </Grid>
