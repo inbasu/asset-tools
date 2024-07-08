@@ -53,9 +53,9 @@ export default function ItInvent() {
     setFields(new Map(filters)); // here need to create new map coz useState dosnt see changes if it in mutable
   };
 
-  const requestInventItems = () => {
+  const requestInventItems = async () => {
     setLoad(true);
-    (async () => {
+    await (async () => {
       axios.post('/mobile/it_iql/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object HAVING inboundReferences("Inventory" = ${inventory?.Key})` }).then((response) => {
         const new_items = response.data.result;
         new_items.forEach((item: Invent) => {

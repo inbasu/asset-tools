@@ -146,7 +146,7 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
             {items && (
               <TableBody>
                 {items.map((item) => (
-                  <TableRow>
+                  <TableRow sx={{ background: item.invented ? '#c8e6c9' : '#ffccbc' }}>
                     {fields &&
                       [...fields.keys()].map((key) => {
                         if (fields.get(key)) {
