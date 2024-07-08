@@ -41,7 +41,6 @@ function Row({ loc, items, fields }: Props) {
               console.log(item);
               return (
                 <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
-                  <h1>{item.Name}</h1>
                   {[...fields.keys()].map((f) => {
                     if (fields.get(f)) {
                       return <TableCell>{item[f]}</TableCell>;
