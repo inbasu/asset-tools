@@ -27,10 +27,11 @@ function Row({ loc, items, fields }: Props) {
     <Fragment>
       <TableRow>
         <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}></IconButton>
-          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          <IconButton size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+          {loc}
         </TableCell>
-        <TableCell>{loc}</TableCell>
       </TableRow>
       <TableRow>
         <Collapse in={open} timeout="auto" unmountOnExit>
