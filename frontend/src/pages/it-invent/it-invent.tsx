@@ -56,13 +56,13 @@ export default function ItInvent() {
   const requestInventItems = async () => {
     setLoad(true);
     setItems([]);
-    await Promise.all([
+    let [invented, not_invented] = await Promise.all([
       axios.post('/mobile/it_iql/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object HAVING inboundReferences("Inventory" = ${inventory?.Key})` }).then((response) => {
         const new_items = response.data.result;
         new_items.forEach((item: Invent) => {
           item.invented = true;
         });
-        setItems(new Array(...items, ...new_items));
+        return new_items;
       }),
       axios
         .post('/mobile/it_iql/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object NOT HAVING inboundReferences("Inventory" = ${inventory?.Key})` })
@@ -71,12 +71,11 @@ export default function ItInvent() {
           new_items.forEach((item: Invent) => {
             item.invented = false;
           });
-          setItems(new Array(...items, ...new_items));
+          return new_items;
         }),
-    ]).then(() => {
-      setShown(items);
-      setLoad(false);
-    });
+    ]);
+    setItems([...invented, not_invented]);
+    setLoad(false);
   };
 
   // const handlePrint = () => {
