@@ -55,6 +55,7 @@ export default function ItInvent() {
 
   const requestInventItems = async () => {
     setLoad(true);
+    setItems([]);
     await (async () => {
       axios.post('/mobile/it_iql/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object HAVING inboundReferences("Inventory" = ${inventory?.Key})` }).then((response) => {
         const new_items = response.data.result;
