@@ -155,5 +155,5 @@ export const formPlaceReport = (items: Array<Item>) :Map<string, Array<Item>> =>
   items.forEach((item: Item) => {
     loc.has(item.Location)? loc.get(item.Location).push(item): loc.set(item.Location, new Array([item]))
   })
-  return new Map([...loc.entries()].sort((a, b) => a[0] > b[0]? -1:1))
+  return new Map([...loc.entries()].sort((a, b) => a[0] < b[0]? -1:1))
 }

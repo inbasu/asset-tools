@@ -32,11 +32,13 @@ function Row({ loc, items, fields }: Props) {
           </IconButton>
           {loc}
         </TableCell>
+        <TableCell>{items.length}</TableCell>
       </TableRow>
       <TableRow>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Table sx={{ width: '100%' }}>
             {items.map((item) => {
+              console.log(items);
               return (
                 <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
                   {[...fields.keys()].map((f) => {
@@ -60,11 +62,11 @@ export default function ReportTable({ items, report, fields }: params) {
     switch (report?.name) {
       case 'Кассы':
         setItems(formTillReport(items));
-        console.log(items);
+        console.log(reportItems);
         break;
       case 'По местам':
         setItems(formPlaceReport(items));
-        console.log(items);
+        console.log(reportItems);
         break;
     }
   }, [report]);
