@@ -104,7 +104,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
   const handleRequest = () => {
     const selectedStore = store ? getStore(stores, store) : '';
     const selectedLocation = location ? getLocation(locations, location) : '';
-    const selectUser = user ? getUser(users, user.split(' | ')[user.split(' | ').length - 1]) : '';
+    const selectedUser = user ? getUser(users, user.split(' | ')[user.split(' | ').length - 1]) : '';
     setLoading(true);
     var formData = new FormData();
     formData.append('action', action);
@@ -113,7 +113,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
     formData.append('store', JSON.stringify(selectedStore));
     formData.append('location', JSON.stringify(selectedLocation));
     formData.append('code', code);
-    formData.append('user', JSON.stringify(selectUser));
+    formData.append('to_user', JSON.stringify(selectedUser));
     formData.append('itreq', itreq);
     axios
       .post('/mobile/handle_user_action/', formData)
