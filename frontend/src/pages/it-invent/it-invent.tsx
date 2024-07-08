@@ -233,7 +233,7 @@ export default function ItInvent() {
           </Typography>
         )}
       </Box>
-      {['Кассы', 'Поместам'].includes(report ? report.name : '') ? (
+      {!['Кассы', 'По местам'].includes(report ? report.name : '') ? (
         <ItemsTable parent_items={shownItems} fields={fields} setParentResults={setResults} toPrint={toPrint} setParentToPrint={setToPrint} />
       ) : (
         <ReportTable report={report} items={shownItems} fields={fields} />

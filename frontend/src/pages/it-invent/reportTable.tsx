@@ -27,24 +27,26 @@ function Row({ loc, items, fields }: Props) {
     <Fragment>
       <TableRow>
         <TableCell>
-          <IconButton onClick={() => setOpen(!open)}></IconButton>
+          <IconButton size="small" onClick={() => setOpen(!open)}></IconButton>
           {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </TableCell>
         <TableCell>{loc}</TableCell>
       </TableRow>
-      <Collapse in={open} unmountOnExit>
-        {items.map((item) => {
-          return (
-            <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee' }}>
-              {[...fields.keys()].map((f) => {
-                if (fields.get(f)) {
-                  return <TableCell>{item[f]}</TableCell>;
-                }
-              })}
-            </TableRow>
-          );
-        })}
-      </Collapse>
+      <TableRow>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          {items.map((item) => {
+            return (
+              <Fragment>
+                {[...fields.keys()].map((f) => {
+                  if (fields.get(f)) {
+                    return <TableCell sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee' }}>{item[f]}</TableCell>;
+                  }
+                })}
+              </Fragment>
+            );
+          })}
+        </Collapse>
+      </TableRow>
     </Fragment>
   );
 }
