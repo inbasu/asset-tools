@@ -23,6 +23,7 @@ type Props = {
 
 function Row({ loc, items, fields }: Props) {
   const [open, setOpen] = useState(false);
+  console.log(items);
   return (
     <Fragment>
       <TableRow>
@@ -36,12 +37,11 @@ function Row({ loc, items, fields }: Props) {
       </TableRow>
       <TableRow>
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <Table sx={{ width: '100%' }}>
+          <Table size="small">
             {items.map((item) => {
               return (
                 <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
                   {[...fields.keys()].map((f) => {
-                    console.log(f);
                     if (fields.get(f)) {
                       return <TableCell>{item[f]}</TableCell>;
                     }
