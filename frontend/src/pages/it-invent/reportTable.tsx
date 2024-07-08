@@ -37,10 +37,10 @@ function Row({ loc, items, fields }: Props) {
         <Collapse in={open} timeout="auto" unmountOnExit>
           {items.map((item) => {
             return (
-              <TableRow>
+              <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
                 {[...fields.keys()].map((f) => {
                   if (fields.get(f)) {
-                    return <TableCell sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee' }}>{item[f]}</TableCell>;
+                    return <TableCell>{item[f]}</TableCell>;
                   }
                 })}
               </TableRow>
