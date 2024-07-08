@@ -164,7 +164,7 @@ export default function Card({ item, action, stores, locations, handleParentItem
       const signal = controller.signal;
       axios
         .post('/mobile/it_iql/', { iql: `"ФИО" LIKE "${user}" OR  "Email" LIKE "${user}" AND "Status" = "Active"`, itemType: 'AD_User' }, { signal: signal })
-        .then((response) => setUsers(response.data));
+        .then((response) => setUsers(response.data.result));
     } else if (user.length < 3) {
       setUsers([]);
     }

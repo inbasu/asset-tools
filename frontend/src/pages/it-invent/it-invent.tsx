@@ -108,10 +108,10 @@ export default function ItInvent() {
       {load && <CircularSpinner />}
       <Grid container spacing={1} width={'30%'} minWidth={'600px'}>
         <Grid item xs={9}>
-          <Select fullWidth size="small" id="inventory-select" value={inventory ? inventory.key : null} onChange={(event) => handleSelectInvent(event)}>
+          <Select fullWidth size="small" id="inventory-select" value={inventory ? inventory.Key : null} onChange={(event) => handleSelectInvent(event)}>
             {invents &&
               invents.map((inv: Invent) => {
-                return <MenuItem value={inv.key}>{inv.InventoryStore}</MenuItem>;
+                return <MenuItem value={inv.Key}>{inv.InventoryStore}</MenuItem>;
               })}
           </Select>
         </Grid>
