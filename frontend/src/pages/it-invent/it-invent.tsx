@@ -74,9 +74,8 @@ export default function ItInvent() {
           return new_items;
         }),
     ]);
-    console.log(invented);
-    console.log(not_invented);
-    setItems([...invented, not_invented]);
+    setItems([...invented, ...not_invented]);
+    setShown(items);
     setLoad(false);
   };
 
