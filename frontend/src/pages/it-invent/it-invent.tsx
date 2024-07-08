@@ -42,12 +42,10 @@ export default function ItInvent() {
   // states
   const handleSelectInvent = (event: SelectChangeEvent<string | null>) => {
     for (let i = 0; i < invents.length; i++) {
-      if (invents[i].key == event.target.value) {
+      if (invents[i].Key == event.target.value) {
         setInventory(invents[i]);
-        break;
       }
     }
-    console.log(inventory);
   };
 
   const handleChangeFilter = (event: ChangeEvent<HTMLInputElement>) => {
