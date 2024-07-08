@@ -56,7 +56,7 @@ export default function ItInvent() {
   const requestInventItems = () => {
     setLoad(true);
     (async () => {
-      axios.post('/mobile/iql_it/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object HAVING inboundReferences("Inventory" = ${inventory?.Key})` }).then((response) => {
+      axios.post('/mobile/it_iql/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object HAVING inboundReferences("Inventory" = ${inventory?.Key})` }).then((response) => {
         const new_items = response.data.result;
         new_items.forEach((item: Invent) => {
           item.invented = true;
@@ -64,7 +64,7 @@ export default function ItInvent() {
         setItems(new Array(...items, ...new_items));
       });
       axios
-        .post('/mobile/iql_it/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object NOT HAVING inboundReferences("Inventory" = ${inventory?.Key})` })
+        .post('/mobile/it_iql/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object NOT HAVING inboundReferences("Inventory" = ${inventory?.Key})` })
         .then((response) => {
           const new_items = response.data.result;
           new_items.forEach((item: Invent) => {
