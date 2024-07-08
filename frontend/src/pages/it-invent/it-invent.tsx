@@ -33,7 +33,7 @@ export default function ItInvent() {
   const [shownItems, setShown] = useState<Array<Item>>([]);
   const [showFilter, setShowFilters] = useState<Boolean>(false);
   const [fields, setFields] = useState<Map<string, boolean>>(filters);
-  const [report, setReport] = useState<Report>([]);
+  const [report, setReport] = useState<Report | null>(null);
   const [results, setResults] = useState<number>(items.length);
   // const [printers, setPrinters] = useState<Map<string, Printer>>();
   // const [printer, setPrinter] = useState<Printer>();
@@ -100,9 +100,11 @@ export default function ItInvent() {
   }, []);
 
   useEffect(() => {
-    const tmpItems = filterItems(items, report.filter);
-    setShown(tmpItems);
-    setResults(tmpItems.length);
+    if (report !== null) {
+      const tmpItems = filterItems(items, report.filter);
+      setShown(tmpItems);
+      setResults(tmpItems.length);
+    }
   }, [report]);
 
   return (
