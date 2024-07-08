@@ -38,10 +38,10 @@ function Row({ loc, items, fields }: Props) {
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Table sx={{ width: '100%' }}>
             {items.map((item) => {
-              console.log(items);
               return (
                 <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
                   {[...fields.keys()].map((f) => {
+                    console.log(f);
                     if (fields.get(f)) {
                       return <TableCell>{item[f]}</TableCell>;
                     }
@@ -69,7 +69,7 @@ export default function ReportTable({ items, report, fields }: params) {
         console.log(reportItems);
         break;
     }
-  }, [report]);
+  }, [report, items, fields]);
 
   return (
     <Table size="small">
