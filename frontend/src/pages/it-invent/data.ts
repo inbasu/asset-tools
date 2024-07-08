@@ -9,7 +9,7 @@ export interface Item {
   Location: string;
   Type: string;
   Model: string;
-  invented?: string;
+  invented?: string; 
   [key: string]: any;
 }
 
@@ -26,8 +26,8 @@ export interface Printer {
 
 export const reports: Array<Report> = [
   { name: 'All', label: 'Всё оборудование ТЦ' }, // All mast be with index 0
-  { name: 'Найдено', label: 'Отчет по найденному оборудованию', filter: new Map([['Invented', ['yes']]]) },
-  { name: 'Не найдено', label: 'Отчет по не найденному оборудованию', filter: new Map([['Invented', ['no']]]) },
+  { name: 'Найдено', label: 'Отчет по найденному оборудованию', filter: new Map([['invented', ['yes']]]) },
+  { name: 'Не найдено', label: 'Отчет по не найденному оборудованию', filter: new Map([['invented', ['no']]]) },
   { name: 'Улить', label: 'Отчет по оборудованию на списание', filter: new Map([['State', ['To Discard']]]) },
   { name: 'По местам', label: 'Отчет по рабочит местам', filter: new Map([['Location', ['!EDP']]]) },
   {

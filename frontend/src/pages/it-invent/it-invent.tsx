@@ -60,7 +60,7 @@ export default function ItInvent() {
       axios.post('/mobile/it_iql/', { itemType: 'Hardware', iql: `"Store" = ${inventory?.InventoryStore} AND object HAVING inboundReferences("Inventory" = ${inventory?.Key})` }).then((response) => {
         const new_items = response.data.result;
         new_items.forEach((item: Invent) => {
-          item.invented = true;
+          item.invented = 'yes';
         });
         return new_items;
       }),
@@ -69,11 +69,13 @@ export default function ItInvent() {
         .then((response) => {
           const new_items = response.data.result;
           new_items.forEach((item: Invent) => {
-            item.invented = false;
+            item.invented = 'no';
           });
           return new_items;
         }),
     ]);
+    console.log(invented);
+    console.log(not_invented);
     setItems([...invented, not_invented]);
     setLoad(false);
   };
