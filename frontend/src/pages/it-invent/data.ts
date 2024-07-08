@@ -139,14 +139,21 @@ export const filterItems = (items: Array<Item>, filter?: Map<string, Array<strin
 export const formTillReport = (items: Array<Item>) => {
   const loc = new Map()
   items.forEach((item: Item) => {
-    if (item.Type) {
       const key = item['Unit_Eq'] ? item["Unit_Eq"] : item.Location
       if (!loc.has(key)) {
         loc.set(key, new Array([item]))
       } else {
         loc.get(key).push(item)
       }
-    }
+    
   });
+  return loc
+}
+
+export const formPlaceReport = (items: Array<Item>) :Map<string, Array<Item>> => {
+  const loc = new Map()
+  items.forEach((item: Item) => {
+    loc.has(item.Location)? loc.get(item.Location).push(item): loc.set(item.Location, new Array([item]))
+  })
   return loc
 }

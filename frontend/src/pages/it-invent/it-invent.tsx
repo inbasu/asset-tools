@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment, ChangeEvent } from 'react';
 // import { UserContext, user } from "../App";
 // import axios from "axios";
 import CircularSpinner from '../../components/spinner';
-import { Invent, Item, Report, reports, filters, filterItems, formTillReport } from './data';
+import { Invent, Item, Report, reports, filters, filterItems } from './data';
 // import { test_items } from '../../test_data/test';
 // MUI
 import Box from '@mui/material/Box';
@@ -23,6 +23,7 @@ import ItemsTable from './table';
 // import Badge from '@mui/material/Badge'
 import Chip from '@mui/material/Chip';
 import axios from 'axios';
+import ReportTable from './reportTable';
 
 export default function ItInvent() {
   // const user = useContext<user>(UserContext);
@@ -104,10 +105,6 @@ export default function ItInvent() {
       const tmpItems = filterItems(items, report.filter);
       setShown(tmpItems);
       setResults(tmpItems.length);
-      if (report.name === 'Кассы') {
-        const itms = formTillReport(tmpItems);
-        console.log(itms);
-      }
     }
   }, [report]);
 
@@ -236,7 +233,11 @@ export default function ItInvent() {
           </Typography>
         )}
       </Box>
-      <ItemsTable parent_items={shownItems} fields={fields} setParentResults={setResults} toPrint={toPrint} setParentToPrint={setToPrint} />
+      {['Кассы', 'Поместам'].includes(report ? report.name : '') ? (
+        <ItemsTable parent_items={shownItems} fields={fields} setParentResults={setResults} toPrint={toPrint} setParentToPrint={setToPrint} />
+      ) : (
+        <ReportTable report={report} items={shownItems} fields={fields} />
+      )}
     </Box>
   );
 }
