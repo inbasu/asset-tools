@@ -37,13 +37,13 @@ function Row({ loc, items, fields }: Props) {
         <Collapse in={open} timeout="auto" unmountOnExit>
           {items.map((item) => {
             return (
-              <Fragment>
+              <TableRow>
                 {[...fields.keys()].map((f) => {
                   if (fields.get(f)) {
                     return <TableCell sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee' }}>{item[f]}</TableCell>;
                   }
                 })}
-              </Fragment>
+              </TableRow>
             );
           })}
         </Collapse>
@@ -58,9 +58,11 @@ export default function ReportTable({ items, report, fields }: params) {
     switch (report?.name) {
       case 'Кассы':
         setItems(formTillReport(items));
+        console.log(items);
         break;
       case 'По местам':
         setItems(formPlaceReport(items));
+        console.log(items);
         break;
     }
   }, [report]);
