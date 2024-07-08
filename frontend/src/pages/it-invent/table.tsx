@@ -146,12 +146,12 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
             {items && (
               <TableBody>
                 {items.map((item) => (
-                  <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#c8e6c9' : '#ffccbc' }}>
+                  <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee' }}>
                     {fields &&
                       [...fields.keys()].map((key) => {
                         if (fields.get(key)) {
                           if (key !== 'Print') {
-                            return <TableCell>{item[key]}</TableCell>;
+                            return <TableCell sx={{ border: '1px solid black' }}>{item[key]}</TableCell>;
                           } else {
                             return <TableCell align="center">{getPrintButton(item)}</TableCell>;
                           }

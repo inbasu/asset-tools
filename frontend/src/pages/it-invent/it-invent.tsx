@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment, ChangeEvent } from 'react';
 // import { UserContext, user } from "../App";
 // import axios from "axios";
 import CircularSpinner from '../../components/spinner';
-import { Invent, Item, Report, reports, filters, filterItems } from './data';
+import { Invent, Item, Report, reports, filters, filterItems, formTillReport } from './data';
 // import { test_items } from '../../test_data/test';
 // MUI
 import Box from '@mui/material/Box';
@@ -104,6 +104,10 @@ export default function ItInvent() {
       const tmpItems = filterItems(items, report.filter);
       setShown(tmpItems);
       setResults(tmpItems.length);
+      if (report.name === 'Кассы') {
+        const itms = formTillReport(tmpItems);
+        console.log(itms);
+      }
     }
   }, [report]);
 
