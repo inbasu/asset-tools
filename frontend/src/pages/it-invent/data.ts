@@ -141,7 +141,7 @@ export const formTillReport = (items: Array<Item>) => {
   items.forEach((item: Item) => {
       const key = item['Unit_Eq'] ? item["Unit_Eq"] : item.Location
       if (!loc.has(key)) {
-        loc.set(key, new Array([item]))
+        loc.set(key, new Array(item))
       } else {
         loc.get(key).push(item)
       }
@@ -153,7 +153,7 @@ export const formTillReport = (items: Array<Item>) => {
 export const formPlaceReport = (items: Array<Item>) :Map<string, Array<Item>> => {
   const loc = new Map()
   items.forEach((item: Item) => {
-    loc.has(item.Location)? loc.get(item.Location).push(item): loc.set(item.Location, new Array([item]))
+    loc.has(item.Location)? loc.get(item.Location).push(item): loc.set(item.Location, new Array(item))
   })
   return new Map([...loc.entries()].sort((a, b) => a[0] < b[0]? -1:1))
 }
