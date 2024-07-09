@@ -46,7 +46,7 @@ function ItemsRow({ label, items, fields }: Props) {
                     <TableRow sx={{ backgroundColor: item.invented ? '#e8f5e9' : '#ffebee' }}>
                       {[...fields.keys()].map((key) => {
                         if (fields.get(key)) {
-                          return <TableCell>{item.get(key)}</TableCell>;
+                          return <TableCell>{item[key]}</TableCell>;
                         }
                       })}
                     </TableRow>
