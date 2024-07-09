@@ -22,38 +22,25 @@ type Props = {
   fields: Map<string, boolean>;
 };
 
-function Row({ loc, items, fields }: Props) {
+function ItemsRow({ label, items, fields }: Props) {
   const [open, setOpen] = useState(false);
   return (
     <Fragment>
-      <TableRow>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
         <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}>
+          <IconButton aria-label="expand" size="small" onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-          {loc}
         </TableCell>
+        <TableCell>{label}</TableCell>
         <TableCell>{items.length}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell colSpan={2}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Table size="small">
-              <TableBody>
-                {items.map((item) => {
-                  console.log(item);
-                  return (
-                    <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
-                      {[...fields.keys()].map((f) => {
-                        if (fields.get(f)) {
-                          return <TableCell>{item[f]}</TableCell>;
-                        }
-                      })}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            {items.map((item) => {
+              return <h1>{item.name}</h1>;
+            })}
           </Collapse>
         </TableCell>
       </TableRow>
