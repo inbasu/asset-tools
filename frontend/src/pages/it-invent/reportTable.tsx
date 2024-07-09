@@ -45,8 +45,12 @@ function ItemsRow({ label, items, fields }: Props) {
                   console.log(item);
                   console.log(item.Name);
                   return (
-                    <TableRow>
-                      <TableCell>{item.Name}</TableCell>
+                    <TableRow sx={{ backgroundColor: item.invented ? '#e8f5e9' : '#ffebee' }}>
+                      {[...fields.keys()].map((key) => {
+                        if (fields.get(key)) {
+                          return <TableCell>{item.get(key)}</TableCell>;
+                        }
+                      })}
                     </TableRow>
                   );
                 })}
