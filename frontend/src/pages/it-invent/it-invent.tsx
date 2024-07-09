@@ -121,8 +121,8 @@ export default function ItInvent() {
   return (
     <Box p={'8%'} pt={'5vh'} sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
       {load && <CircularSpinner />}
-      <Grid container spacing={1} width={'30%'} minWidth={'600px'}>
-        <Grid item xs={9}>
+      <Grid container spacing={1} width={'30%'} minWidth={'450px'}>
+        <Grid item xs={8}>
           <Select fullWidth size="small" id="inventory-select" value={inventory ? inventory.Key : null} onChange={(event) => handleSelectInvent(event)}>
             {invents &&
               invents.map((inv: Invent) => {
@@ -130,7 +130,7 @@ export default function ItInvent() {
               })}
           </Select>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Button fullWidth variant="contained" sx={{ height: '39px' }} disabled={inventory === undefined || load ? true : false} onClick={requestInventItems}>
             Запрос к БД
           </Button>
@@ -140,7 +140,7 @@ export default function ItInvent() {
             Фильтры
           </Button>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <PopupState variant="popover" popupId="report-popup-menu">
             {(popupState) => (
               <Fragment>
@@ -168,7 +168,7 @@ export default function ItInvent() {
             )}
           </PopupState>
         </Grid>
-        <Grid item xs={3}>
+        {/* <Grid item xs={3}>
           <PopupState variant="popover" popupId="print-popup-menu">
             {(popupState) => (
               <Fragment>
@@ -187,8 +187,8 @@ export default function ItInvent() {
               </Fragment>
             )}
           </PopupState>
-        </Grid>
-        <Grid item xs={3}>
+        </Grid> */}
+        <Grid item xs={4}>
           <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={handleToExcel} color="success" disabled={load || !items.length ? true : false}>
             <TableViewIcon />В Excel
           </Button>
