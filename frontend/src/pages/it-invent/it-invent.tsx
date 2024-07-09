@@ -93,7 +93,7 @@ export default function ItInvent() {
         const url = window.URL.createObjectURL(new Blob([blob]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `${report?.name}.xls`);
+        link.setAttribute('download', `${report?.name}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.parentNode?.removeChild(link);
