@@ -87,7 +87,7 @@ export default function ItInvent() {
 
   const handleToExcel = () => {
     axios
-      .post('/invent/api_inv/report/', { data: JSON.stringify(shownItems) })
+      .post('/invent/api_inv/report/', { items: shownItems })
       .then((response) => response.data)
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
