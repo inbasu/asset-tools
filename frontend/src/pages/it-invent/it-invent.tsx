@@ -94,7 +94,7 @@ export default function ItInvent() {
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', `${report?.name}.xls`);
-        document.appendChild(link);
+        document.body.appendChild(link);
         link.click();
         link.parentNode?.removeChild(link);
       });

@@ -23,7 +23,6 @@ type Props = {
 };
 
 function ItemsRow({ label, items, fields }: Props) {
-  console.log(fields);
   const [open, setOpen] = useState(false);
   return (
     <Fragment>
