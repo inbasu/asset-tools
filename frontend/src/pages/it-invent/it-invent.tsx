@@ -135,7 +135,7 @@ export default function ItInvent() {
             Запрос к БД
           </Button>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={() => setShowFilters(!showFilter)}>
             Фильтры
           </Button>
