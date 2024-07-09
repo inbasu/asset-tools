@@ -8,7 +8,6 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import TableBody from '@mui/material/TableBody';
 
 type params = {
   report: Report | null;
@@ -17,12 +16,13 @@ type params = {
 };
 
 type Props = {
-  loc: string;
+  label: string;
   items: Array<Item>;
   fields: Map<string, boolean>;
 };
 
 function ItemsRow({ label, items, fields }: Props) {
+  console.log(fields);
   const [open, setOpen] = useState(false);
   return (
     <Fragment>
@@ -66,7 +66,7 @@ export default function ReportTable({ items, report, fields }: params) {
   return (
     <Table size="small">
       {(reportItems ? [...reportItems.entries()] : []).map((one) => {
-        return <Row fields={fields} items={one[1]} loc={one[0]} />;
+        return <ItemsRow fields={fields} items={one[1]} label={one[0]} />;
       })}
     </Table>
   );
