@@ -8,6 +8,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import TableBody from '@mui/material/TableBody';
 
 type params = {
   report: Report | null;
@@ -35,22 +36,26 @@ function Row({ loc, items, fields }: Props) {
         <TableCell>{items.length}</TableCell>
       </TableRow>
       <TableRow>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <Table size="small">
-            {items.map((item) => {
-              console.log(item);
-              return (
-                <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
-                  {[...fields.keys()].map((f) => {
-                    if (fields.get(f)) {
-                      return <TableCell>{item[f]}</TableCell>;
-                    }
-                  })}
-                </TableRow>
-              );
-            })}
-          </Table>
-        </Collapse>
+        <TableCell colSpan={2}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Table size="small">
+              <TableBody>
+                {items.map((item) => {
+                  console.log(item);
+                  return (
+                    <TableRow sx={{ backgroundColor: item.invented === 'yes' ? '#e8f5e9' : '#ffebee', width: '100%' }}>
+                      {[...fields.keys()].map((f) => {
+                        if (fields.get(f)) {
+                          return <TableCell>{item[f]}</TableCell>;
+                        }
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Collapse>
+        </TableCell>
       </TableRow>
     </Fragment>
   );
