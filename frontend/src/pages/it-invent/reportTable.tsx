@@ -42,8 +42,6 @@ function ItemsRow({ label, items, fields }: Props) {
             <Box>
               <Table>
                 {items.map((item) => {
-                  console.log(item);
-                  console.log(item.Name);
                   return (
                     <TableRow sx={{ backgroundColor: item.invented ? '#e8f5e9' : '#ffebee' }}>
                       {[...fields.keys()].map((key) => {
