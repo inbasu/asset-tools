@@ -131,11 +131,9 @@ export default function ItInvent() {
           </Select>
         </Grid>
         <Grid item xs={3}>
-          {!load && (
-            <Button fullWidth variant="contained" sx={{ height: '39px' }} disabled={inventory === undefined ? true : false} onClick={requestInventItems}>
-              Запрос к БД
-            </Button>
-          )}
+          <Button fullWidth variant="contained" sx={{ height: '39px' }} disabled={inventory === undefined || load ? true : false} onClick={requestInventItems}>
+            Запрос к БД
+          </Button>
         </Grid>
         <Grid item xs={3}>
           <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={() => setShowFilters(!showFilter)}>
@@ -146,12 +144,10 @@ export default function ItInvent() {
           <PopupState variant="popover" popupId="report-popup-menu">
             {(popupState) => (
               <Fragment>
-                {(!load || items) && (
-                  <Button fullWidth variant="contained" sx={{ height: '39px' }} {...bindTrigger(popupState)}>
-                    Отчеты
-                    <ExpandMoreIcon />
-                  </Button>
-                )}
+                <Button fullWidth variant="contained" sx={{ height: '39px' }} {...bindTrigger(popupState)} disabled={load || !items.length ? true : false}>
+                  Отчеты
+                  <ExpandMoreIcon />
+                </Button>
                 <Menu {...bindMenu(popupState)}>
                   {reports &&
                     reports
@@ -193,11 +189,9 @@ export default function ItInvent() {
           </PopupState>
         </Grid>
         <Grid item xs={3}>
-          {(items || !load) && (
-            <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={handleToExcel} color="success">
-              <TableViewIcon />В Excel
-            </Button>
-          )}
+          <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={handleToExcel} color="success" disabled={load || !items.length ? true : false}>
+            <TableViewIcon />В Excel
+          </Button>
         </Grid>
       </Grid>
       {showFilter && (
