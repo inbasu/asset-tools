@@ -87,13 +87,13 @@ export default function ItInvent() {
 
   const handleToExcel = () => {
     axios
-      .post('/invent/api_inv/report/', { items: shownItems })
+      .post('/invent/api_inv/report/', { items: shownItems }, { responseType: 'blob' })
       .then((response) => response.data)
       .then((blob) => {
-        const url = window.URL.createObjectURL(new Blob([blob]));
+        const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `${report?.name}.xlsx`);
+        link.download = `${report?.name}.xls`;
         document.body.appendChild(link);
         link.click();
         link.parentNode?.removeChild(link);
