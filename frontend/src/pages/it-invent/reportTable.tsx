@@ -76,7 +76,7 @@ export default function ReportTable({ items, report, fields }: params) {
   }, [report, items, fields]);
 
   return (
-    <Table size="small">
+    <Table size="small" sx={{ border: '1px solid grey' }}>
       {(reportItems ? [...reportItems.entries()] : []).map((one) => {
         return <ItemsRow fields={fields} items={one[1]} label={one[0]} />;
       })}

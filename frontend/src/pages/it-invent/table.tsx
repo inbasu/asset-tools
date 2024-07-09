@@ -93,8 +93,8 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
       {load && <CircularSpinner />}
       {parent_items.length != 0 && (
         <TableContainer component={Paper} sx={{ marginTop: '2vh', width: '100%' }}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table" size="small">
-            <TableHead>
+          <Table sx={{ minWidth: 650, border: '1px solid grey' }} aria-label="simple table" size="small">
+            <TableHead sx={{ backgroundColor: '#ede7f6' }}>
               <TableRow>
                 {fields &&
                   [...fields.keys()].map((key) => {
@@ -151,7 +151,7 @@ export default function ItemsTable({ parent_items, fields, setParentResults, toP
                       [...fields.keys()].map((key) => {
                         if (fields.get(key)) {
                           if (key !== 'Print') {
-                            return <TableCell sx={{ border: '1px solid black' }}>{item[key]}</TableCell>;
+                            return <TableCell sx={{ border: '1px solid grey' }}>{item[key]}</TableCell>;
                           } else {
                             return <TableCell align="center">{getPrintButton(item)}</TableCell>;
                           }
