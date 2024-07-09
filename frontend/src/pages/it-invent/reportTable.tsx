@@ -42,6 +42,8 @@ function ItemsRow({ label, items, fields }: Props) {
             <Box>
               <Table>
                 {items.map((item) => {
+                  console.log(item);
+                  console.log(item.Name);
                   return (
                     <TableRow>
                       <TableCell>{item.Name}</TableCell>
