@@ -40,7 +40,7 @@ function ItemsRow({ label, items, fields }: Props) {
         <TableCell style={{ padding: 0 }} colSpan={3}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box>
-              <Table>
+              <Table size="small">
                 {items.map((item) => {
                   return (
                     <TableRow sx={{ backgroundColor: item.invented ? '#e8f5e9' : '#ffebee' }}>
