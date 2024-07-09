@@ -8,6 +8,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Box from '@mui/material/Box';
 
 type params = {
   report: Report | null;
@@ -38,9 +39,17 @@ function ItemsRow({ label, items, fields }: Props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            {items.map((item) => {
-              return <h1>{item.name}</h1>;
-            })}
+            <Box>
+              <Table>
+                {items.map((item) => {
+                  return (
+                    <TableRow>
+                      <TableCell>{item.Name}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </Table>
+            </Box>
           </Collapse>
         </TableCell>
       </TableRow>
