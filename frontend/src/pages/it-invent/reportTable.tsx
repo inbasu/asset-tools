@@ -37,7 +37,7 @@ function ItemsRow({ label, items, fields }: Props) {
         <TableCell>{items.length}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
+        <TableCell style={{ padding: 0 }} colSpan={3}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box>
               <Table>

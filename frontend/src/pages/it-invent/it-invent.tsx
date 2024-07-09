@@ -86,8 +86,18 @@ export default function ItInvent() {
   // };
 
   const handleToExcel = () => {
-    // send shownItems to print
-    console.log(shownItems.length);
+    axios
+      .post('/api_inv/report/', { data: shownItems })
+      .then((response) => response.data)
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${report?.name}.xls`);
+        document.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+      });
   };
 
   // effects
