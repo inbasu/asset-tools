@@ -131,9 +131,11 @@ export default function ItInvent() {
           </Select>
         </Grid>
         <Grid item xs={3}>
-          <Button fullWidth variant="contained" sx={{ height: '39px' }} disabled={inventory === undefined ? true : false} onClick={requestInventItems}>
-            Запрос к БД
-          </Button>
+          {!load && (
+            <Button fullWidth variant="contained" sx={{ height: '39px' }} disabled={inventory === undefined ? true : false} onClick={requestInventItems}>
+              Запрос к БД
+            </Button>
+          )}
         </Grid>
         <Grid item xs={3}>
           <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={() => setShowFilters(!showFilter)}>
@@ -144,10 +146,12 @@ export default function ItInvent() {
           <PopupState variant="popover" popupId="report-popup-menu">
             {(popupState) => (
               <Fragment>
-                <Button fullWidth variant="contained" sx={{ height: '39px' }} {...bindTrigger(popupState)}>
-                  Отчеты
-                  <ExpandMoreIcon />
-                </Button>
+                {(!load || items) && (
+                  <Button fullWidth variant="contained" sx={{ height: '39px' }} {...bindTrigger(popupState)}>
+                    Отчеты
+                    <ExpandMoreIcon />
+                  </Button>
+                )}
                 <Menu {...bindMenu(popupState)}>
                   {reports &&
                     reports
@@ -189,9 +193,11 @@ export default function ItInvent() {
           </PopupState>
         </Grid>
         <Grid item xs={3}>
-          <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={handleToExcel} color="success">
-            <TableViewIcon />В Excel
-          </Button>
+          {(items || !load) && (
+            <Button fullWidth variant="contained" sx={{ height: '39px' }} onClick={handleToExcel} color="success">
+              <TableViewIcon />В Excel
+            </Button>
+          )}
         </Grid>
       </Grid>
       {showFilter && (
