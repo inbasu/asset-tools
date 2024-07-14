@@ -20,12 +20,12 @@ const baseUser: user = {
 export const UserContext = createContext<user>(baseUser);
 
 const getUser = async () => {
-  // return {
-  //   username: 'test.user',
-  //   email: 'some@domen.zz',
-  //   roles: [],
-  //   store_role: [],
-  // };
+  return {
+    username: 'test.user',
+    email: 'some@domen.zz',
+    roles: ['MCC_RU_INSIGHT_IT_ROLE'],
+    store_role: [],
+  };
   try {
     const responce = await axios.get('/auth/whoami/');
     return responce.data;

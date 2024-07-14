@@ -7,6 +7,7 @@ import { UserContext, user } from './App';
 import { useContext } from 'react';
 import { checkPermission, permissions } from './permissions';
 import UserRights from './pages/401';
+import Notify from './pages/invent-notify/notify';
 
 export default function Router() {
   const user = useContext<user>(UserContext);
@@ -16,6 +17,7 @@ export default function Router() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/mobile" element={checkPermission(user, permissions.Mobile) ? <Mobile /> : <UserRights />} />
+        <Route path="/it-notify" element={<Notify />} />
         <Route path="/it-invent" element={checkPermission(user, permissions.ItInvent) ? <ItInvent /> : <UserRights />} />
         <Route path="/401" element={<UserRights />} />
       </Routes>
