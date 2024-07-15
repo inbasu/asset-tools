@@ -10,6 +10,7 @@ import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import CircularSpinner from '../../components/spinner';
 
 export default function Notify({ invent, setShowNotify }: { invent: string; setShowNotify: Dispatch<SetStateAction<Boolean>> }) {
   const [action, setAction] = useState<string>('');
@@ -17,16 +18,18 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
   const [cc, setCc] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [title, setTitle] = useState<string>('');
-  // const [load, setLoad] = useState<Boolean>(false);
+  const [load, setLoad] = useState<Boolean>(false);
   // const [done, setDone] = useState<string>('');
 
   const handelActionChange = async (action: string) => {
     setAction(action);
+    setLoad(true);
     axios.post('/it-invent/notify/mails/', { invent: invent, action: action }).then((response) => {
       setTo(response.data.To);
       setCc(response.data.Cc);
       setBody(response.data.body);
       setTitle(response.data.title);
+      setLoad(false);
     });
   };
   const handleSend = () => {
@@ -83,7 +86,7 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
             </Typography>
           </Grid>
           <Grid xs={10}>
-            <TextField fullWidth size="small" variant="standard" multiline />
+            <TextField fullWidth size="small" variant="standard" multiline value={to} />
           </Grid>
           <Grid xs={2}>
             <Typography textAlign={'center'} variant="subtitle1">
@@ -91,7 +94,7 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
             </Typography>
           </Grid>
           <Grid xs={10}>
-            <TextField fullWidth size="small" variant="standard" multiline />
+            <TextField fullWidth size="small" variant="standard" multiline value={cc} />
           </Grid>
         </Grid>
 
@@ -102,6 +105,7 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
           <TextField id="msg-body" value={body} rows={25} multiline fullWidth onChange={(evetn) => setBody(evetn.target.value)} />
         </Grid>
       </Grid>
+      {load && <CircularSpinner />}
     </Box>
   );
 }
