@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
@@ -7,21 +8,28 @@ import Button from '@mui/material/Button';
 import Radio from '@mui/material/Radio';
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import NotificationSuccess from '../../components/notifications/allGood';
 
-export default function Notify() {
+export default function Notify({ invent }: { invent: string }) {
   const [action, setAction] = useState<string>('');
-  const [to, setTo] = useState<Array<string>>([]);
-  const [cc, setCc] = useState<Array<string>>([]);
+  const [to, setTo] = useState<string>('');
+  const [cc, setCc] = useState<string>('');
   const [body, setBody] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [done, setDone] = useState<string>('');
 
-  const handelActionChange = (action: string) => {
+  const handelActionChange = async (action: string) => {
     setAction(action);
-    setTo();
-    setCc();
-    setBody();
+    axios.post('/it-invent/notify/mails/', { invent: invent, action: action }).then((response) => {
+      setTo(response.data.To);
+      setCc(response.data.Cc);
+      setBody(response.data.body);
+    });
   };
   const handleSend = () => {
-    console.log('123123123');
+    axios.post('/it-invent/notify/send/', { To: to, Cc: cc, title: title, body: body }).then(() => {
+      setDone('Done');
+    });
   };
 
   return (
@@ -34,11 +42,23 @@ export default function Notify() {
               label={'Open'}
               control={<Radio size="small" value={'open'} checked={action == 'open'} onChange={(event) => handelActionChange(event.target.value)} />}
             />
+
             <FormControlLabel
               labelPlacement="top"
               label={'Start'}
               control={<Radio size="small" value={'start'} checked={action == 'start'} onChange={(event) => handelActionChange(event.target.value)} />}
             />
+            <FormControlLabel
+              labelPlacement="top"
+              label={'Mobile'}
+              control={<Radio size="small" value={'mobile'} checked={action == 'mobile'} onChange={(event) => handelActionChange(event.target.value)} />}
+            />
+            <FormControlLabel
+              labelPlacement="top"
+              label={'Temp'}
+              control={<Radio size="small" value={'temp'} checked={action == 'temp'} onChange={(event) => handelActionChange(event.target.value)} />}
+            />
+
             <FormControlLabel
               labelPlacement="top"
               label={'Close'}
@@ -57,7 +77,7 @@ export default function Notify() {
               </Typography>
             </Grid>
             <Grid xs={10}>
-              <TextField fullWidth size="small" variant="standard" />
+              <TextField fullWidth size="small" variant="standard" multiline />
             </Grid>
             <Grid xs={2}>
               <Typography textAlign={'center'} variant="subtitle1">
@@ -65,15 +85,19 @@ export default function Notify() {
               </Typography>
             </Grid>
             <Grid xs={10}>
-              <TextField fullWidth size="small" variant="standard" />
+              <TextField fullWidth size="small" variant="standard" multiline />
             </Grid>
           </Grid>
 
           <Grid xs={12} pt={1}>
-            <TextField id="msg-body" rows={25} multiline fullWidth onChange={(evetn) => setBody(evetn.target.value)} />
+            <TextField id="msg-title" value={title} size="small" fullWidth onChange={(evetn) => setTitle(evetn.target.value)} />
+          </Grid>
+          <Grid xs={12} pt={1}>
+            <TextField id="msg-body" value={body} rows={25} multiline fullWidth onChange={(evetn) => setBody(evetn.target.value)} />
           </Grid>
         </Grid>
       </Box>
+      {done && <NotificationSuccess text="Уведомление отправленно" setAlert={setDone} />}
     </>
   );
 }

@@ -24,6 +24,7 @@ import ItemsTable from './table';
 // import Chip from '@mui/material/Chip';
 import axios from 'axios';
 import ReportTable from './reportTable';
+import Notify from './notify';
 
 export default function ItInvent() {
   // const user = useContext<user>(UserContext);
@@ -33,6 +34,7 @@ export default function ItInvent() {
   const [items, setItems] = useState<Array<Item>>([]);
   const [shownItems, setShown] = useState<Array<Item>>([]);
   const [showFilter, setShowFilters] = useState<Boolean>(false);
+  const [showNotify, setShowNotify] = useState<Boolean>(false);
   const [fields, setFields] = useState<Map<string, boolean>>(filters);
   const [report, setReport] = useState<Report | null>(null);
   const [results, setResults] = useState<number>(items.length);
@@ -122,7 +124,7 @@ export default function ItInvent() {
     <Box p={'8%'} pt={'5vh'} sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
       {load && <CircularSpinner />}
       <Grid container spacing={1} width={'30%'} minWidth={'450px'}>
-        <Grid item xs={8}>
+        <Grid item xs={4}>
           <Select fullWidth size="small" id="inventory-select" value={inventory ? inventory.Key : null} onChange={(event) => handleSelectInvent(event)}>
             {invents &&
               invents.map((inv: Invent) => {
@@ -167,6 +169,11 @@ export default function ItInvent() {
               </Fragment>
             )}
           </PopupState>
+        </Grid>
+        <Grid item xs={4}>
+          <Button onClick={() => setShowNotify(!showNotify)} variant="contained" fullWidth sx={{ height: '39px' }} disabled={load || !items.length ? true : false}>
+            Рассылка
+          </Button>
         </Grid>
         {/* <Grid item xs={3}>
           <PopupState variant="popover" popupId="print-popup-menu">
@@ -231,6 +238,7 @@ export default function ItInvent() {
           </Grid>
         </Box>
       )}
+      {inventory && showNotify && <Notify invent={inventory.InventoryStore} />}
       <Box justifyContent={'center'} flexGrow={1}>
         {report && (
           <Typography display="block" width={'100%'} variant="h5" color="initial" textAlign={'center'}>
