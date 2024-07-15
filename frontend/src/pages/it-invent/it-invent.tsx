@@ -238,7 +238,7 @@ export default function ItInvent() {
           </Grid>
         </Box>
       )}
-      {showNotify && <Notify invent={'inventory.InventoryStore'} setShowNotify={setShowNotify} />}
+      {inventory && showNotify && <Notify invent={inventory.InventoryStore} setShowNotify={setShowNotify} />}
       <Box justifyContent={'center'} flexGrow={1}>
         {report && (
           <Typography display="block" width={'100%'} variant="h5" color="initial" textAlign={'center'}>

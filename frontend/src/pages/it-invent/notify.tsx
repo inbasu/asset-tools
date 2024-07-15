@@ -17,6 +17,7 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
   const [cc, setCc] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [title, setTitle] = useState<string>('');
+  const [load, setLoad] = useState<Boolean>(false);
   // const [done, setDone] = useState<string>('');
 
   const handelActionChange = async (action: string) => {
@@ -25,6 +26,7 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
       setTo(response.data.To);
       setCc(response.data.Cc);
       setBody(response.data.body);
+      setTitle(response.data.title);
     });
   };
   const handleSend = () => {
