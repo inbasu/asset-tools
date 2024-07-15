@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import Radio from '@mui/material/Radio';
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import NotificationSuccess from '../../components/notifications/allGood';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -18,7 +17,7 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
   const [cc, setCc] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [title, setTitle] = useState<string>('');
-  const [done, setDone] = useState<string>('');
+  // const [done, setDone] = useState<string>('');
 
   const handelActionChange = async (action: string) => {
     setAction(action);
@@ -30,7 +29,8 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
   };
   const handleSend = () => {
     axios.post('/it-invent/notify/send/', { To: to, Cc: cc, title: title, body: body }).then(() => {
-      setDone('Done');
+      // setDone('Done');
+      console.log(1);
     });
   };
 
