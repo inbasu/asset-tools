@@ -86,7 +86,7 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
             </Typography>
           </Grid>
           <Grid xs={10}>
-            <TextField fullWidth size="small" variant="standard" multiline value={to} />
+            <TextField fullWidth size="small" variant="standard" multiline value={to} onChange={(event) => setTo(event.target.value)} />
           </Grid>
           <Grid xs={2}>
             <Typography textAlign={'center'} variant="subtitle1">
@@ -94,7 +94,7 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
             </Typography>
           </Grid>
           <Grid xs={10}>
-            <TextField fullWidth size="small" variant="standard" multiline value={cc} />
+            <TextField fullWidth size="small" variant="standard" multiline value={cc} onChange={(event) => setCc(event.target.value)} />
           </Grid>
         </Grid>
 

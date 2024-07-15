@@ -43,6 +43,8 @@ class SendMailView(APIView):
         if msg["To"] is not None:
             with smtplib.SMTP(host="") as connection:
                 connection.starttls()
-                connection.sendmail(from_addr=msg["From"], to_addrs=msg["To"], msg=msg.as_stri())
+                connection.sendmail(
+                    from_addr=msg["From"], to_addrs=msg["To"], msg=msg.as_stri()
+                )
             return Response({})
         return Response({})
