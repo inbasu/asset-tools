@@ -171,7 +171,7 @@ export default function ItInvent() {
           </PopupState>
         </Grid>
         <Grid item xs={4}>
-          <Button onClick={() => setShowNotify(!showNotify)} variant="contained" fullWidth sx={{ height: '39px' }} disabled={load || !items.length ? true : false}>
+          <Button onClick={() => setShowNotify(!showNotify)} variant="contained" fullWidth sx={{ height: '39px' }}>
             Рассылка
           </Button>
         </Grid>
@@ -238,7 +238,7 @@ export default function ItInvent() {
           </Grid>
         </Box>
       )}
-      {inventory && showNotify && <Notify invent={inventory.InventoryStore} />}
+      {showNotify && <Notify invent={'inventory.InventoryStore'} setShowNotify={setShowNotify} />}
       <Box justifyContent={'center'} flexGrow={1}>
         {report && (
           <Typography display="block" width={'100%'} variant="h5" color="initial" textAlign={'center'}>
