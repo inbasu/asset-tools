@@ -171,9 +171,11 @@ export default function ItInvent() {
           </PopupState>
         </Grid>
         <Grid item xs={4}>
-          <Button onClick={() => setShowNotify(!showNotify)} variant="contained" fullWidth sx={{ height: '39px' }}>
-            Рассылка
-          </Button>
+          {inventory && items && (
+            <Button onClick={() => setShowNotify(!showNotify)} variant="contained" fullWidth sx={{ height: '39px' }}>
+              Рассылка
+            </Button>
+          )}
         </Grid>
         {/* <Grid item xs={3}>
           <PopupState variant="popover" popupId="print-popup-menu">
