@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import CircularSpinner from '../../components/spinner';
 
-export default function Notify({ invent, setShowNotify }: { invent: string; setShowNotify: Dispatch<SetStateAction<Boolean>> }) {
+export default function Notify({ invent, setShowNotify, total, lost }: { invent: string; setShowNotify: Dispatch<SetStateAction<Boolean>>; total: number; lost: number }) {
   const [action, setAction] = useState<string>('');
   const [to, setTo] = useState<string>('');
   const [cc, setCc] = useState<string>('');
@@ -27,7 +27,12 @@ export default function Notify({ invent, setShowNotify }: { invent: string; setS
     axios.post('/it-invent/notify/mails/', { invent: invent, action: action }).then((response) => {
       setTo(response.data.To);
       setCc(response.data.Cc);
-      setBody(response.data.body);
+      setBody(response.data.body.replace());
+      if (action === 'close') {
+        body.replace('$TOTAL', String(total));
+        body.replace('$LOST', String(lost));
+        setBody(body);
+      }
       setTitle(response.data.title);
       setLoad(false);
     });

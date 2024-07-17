@@ -2,7 +2,8 @@
 .venv
 poetry.lock
 .env
-
+.ruff_cache
+.mypy_cache
 
 # python
 __pycache__
