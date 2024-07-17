@@ -28,17 +28,12 @@ export default function Notify({ invent, setShowNotify, total, lost }: { invent:
       setTo(response.data.To);
       setCc(response.data.Cc);
       setBody(response.data.body.replace());
-      if (action === 'close') {
-        body.replace('$TOTAL', String(total));
-        body.replace('$LOST', String(lost));
-        setBody(body);
-      }
       setTitle(response.data.title);
       setLoad(false);
     });
   };
   const handleSend = () => {
-    axios.post('/it-invent/notify/send/', { To: to, Cc: cc, title: title, body: body }).then(() => {
+    axios.post('/it-invent/notify/send/', { To: to, Cc: cc, title: title, body: body, total: total, lost: lost }).then(() => {
       // setDone('Done');
       console.log(1);
     });
