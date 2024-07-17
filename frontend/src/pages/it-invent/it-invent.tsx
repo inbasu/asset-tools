@@ -238,7 +238,7 @@ export default function ItInvent() {
           </Grid>
         </Box>
       )}
-      {inventory && showNotify && <Notify invent={inventory.InventoryStore} setShowNotify={setShowNotify} total={items.length} lost={items.filter((item) => !item.invented).length} />}
+      {inventory && showNotify && <Notify invent={inventory.InventoryStore} setShowNotify={setShowNotify} total={items.length} lost={items.filter((item) => item.invented == 'no').length} />}
       <Box justifyContent={'center'} flexGrow={1}>
         {report && (
           <Typography display="block" width={'100%'} variant="h5" color="initial" textAlign={'center'}>
