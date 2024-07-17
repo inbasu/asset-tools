@@ -24,7 +24,7 @@ export default function Notify({ invent, setShowNotify, total, lost }: { invent:
   const handelActionChange = async (action: string) => {
     setAction(action);
     setLoad(true);
-    axios.post('/it-invent/notify/mails/', { invent: invent, action: action }).then((response) => {
+    axios.post('/it-invent/notify/mails/', { invent: invent, action: action, total: total, lost: lost }).then((response) => {
       setTo(response.data.To);
       setCc(response.data.Cc);
       setBody(response.data.body.replace());
@@ -33,14 +33,14 @@ export default function Notify({ invent, setShowNotify, total, lost }: { invent:
     });
   };
   const handleSend = () => {
-    axios.post('/it-invent/notify/send/', { To: to, Cc: cc, title: title, body: body, total: total, lost: lost }).then(() => {
+    axios.post('/it-invent/notify/send/', { To: to, Cc: cc, title: title, body: body }).then(() => {
       // setDone('Done');
       console.log(1);
     });
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '5%', position: 'absolute', left: 'calc(50% - 450px)' }}>
+    <Box zIndex={1500} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '5%', position: 'absolute', left: 'calc(50% - 450px)' }}>
       <IconButton aria-label="close" sx={{ position: 'absolute', right: '5px', top: '10%' }} onClick={() => setShowNotify(false)}>
         <CloseIcon fontSize="inherit" />
       </IconButton>
