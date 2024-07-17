@@ -171,7 +171,7 @@ export default function ItInvent() {
           </PopupState>
         </Grid>
         <Grid item xs={4}>
-          <Button onClick={() => setShowNotify(!showNotify)} variant="contained" fullWidth sx={{ height: '39px' }} disabled={inventory && items ? true : false}>
+          <Button onClick={() => setShowNotify(!showNotify)} variant="contained" fullWidth sx={{ height: '39px' }} disabled={inventory && items.length ? true : false}>
             Рассылка
           </Button>
         </Grid>
