@@ -17,12 +17,14 @@ type params = {
 };
 
 type Props = {
-  label: string;
-  items: Array<Item>;
-  fields: Map<string, boolean>;
+        reportName: string;
+        label: string;
+        items: Array<Item>;
+        fields: Map<string, boolean>;
 };
 
-function ItemsRow({ label, items, fields }: Props) {
+function ItemsRow({ label, items, fields, reportName }: Props) {
+
   const [open, setOpen] = useState(false);
   return (
     <Fragment>
@@ -37,7 +39,11 @@ function ItemsRow({ label, items, fields }: Props) {
       </TableRow>
       <TableRow>
         <TableCell style={{ padding: 0 }} colSpan={3}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={open} timeout="auto" unmountOnExit sx={{backgroundColor: 
+                  reportName === "По местам" ?
+                        items.filter(item => item.Type === "MONITOR").length * 2 === items.length ? '#e8f5e9': '#ffebee': 
+                        "white"
+          }}>
             <Box>
               <Table size="small">
                 {items.map((item) => {
@@ -66,11 +72,9 @@ export default function ReportTable({ items, report, fields }: params) {
     switch (report?.name) {
       case 'Кассы':
         setItems(formTillReport(items));
-        console.log(reportItems);
         break;
       case 'По местам':
         setItems(formPlaceReport(items));
-        console.log(reportItems);
         break;
     }
   }, [report, items, fields]);
@@ -78,7 +82,7 @@ export default function ReportTable({ items, report, fields }: params) {
   return (
     <Table size="small" sx={{ border: '1px solid grey' }}>
       {(reportItems ? [...reportItems.entries()] : []).map((one) => {
-        return <ItemsRow fields={fields} items={one[1]} label={one[0]} />;
+        return <ItemsRow fields={fields} items={one[1]} label={one[0]} reportName={report?.name} />;
       })}
     </Table>
   );
