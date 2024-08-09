@@ -24,13 +24,13 @@ class Mars:
         }
         return session
 
-    def __update_token(self) -> None:
+    def __update_token(self) -> bool:
         url = "https://api.metronom.dev/uaa/oauth/token"
         headers = {"Content-Type": "application/x-www-form-urlencode", "Authorization": f"Basic {self.__token}"}
         params = {"grant_type": "password", "username": self.__username, "password": self.__password}
         response = requests.get(url=url, headers=headers, params=params, verify=False, timeout=20)
         if response.status_code == 200:
-            self.session.headers["Authorization"] = f'Bearer {response.json()['access_token']}'
+            self.session.headers["Authorization"] = f"Bearer {response.json()['access_token']}"
             return True
         return False
 

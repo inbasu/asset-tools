@@ -1,8 +1,7 @@
+from django.shortcuts import redirect
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED
 from rest_framework.views import APIView
-
-from django.shortcuts import redirect
 
 
 # Create your views here.

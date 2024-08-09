@@ -1,8 +1,5 @@
 from django.urls import path
 
-from utils.views import DownloadMoblieBlank, TackebakView
+from utils.views import SendMailView
 
-urlpatterns = [
-    path("download/mobile-blank/", DownloadMoblieBlank.as_view()),
-    path("blank/takeback/", TackebakView.as_view()),
-]
+urlpatterns = [path("send-mail/", SendMailView.as_view())]

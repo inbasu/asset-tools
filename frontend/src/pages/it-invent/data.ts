@@ -9,7 +9,7 @@ export interface Item {
   Location: string;
   Type: string;
   Model: string;
-  invented?: string; 
+  invented?: string;
   [key: string]: any;
 }
 
@@ -29,6 +29,14 @@ export const reports: Array<Report> = [
   { name: 'Найдено', label: 'Отчет по найденному оборудованию', filter: new Map([['invented', ['yes']]]) },
   { name: 'Не найдено', label: 'Отчет по не найденному оборудованию', filter: new Map([['invented', ['no']]]) },
   { name: 'Улить', label: 'Отчет по оборудованию на списание', filter: new Map([['State', ['To Discard']]]) },
+  {
+    name: 'Рабочим местам',
+    label: 'Отчет по рабочит местам (TC+PC)',
+    filter: new Map([
+      ['Location', ['!EDP']],
+      ['Type', ['DESKTOP', 'THIN CLIENT', 'MONITOR']],
+    ]),
+  },
   { name: 'По местам', label: 'Отчет по рабочит местам', filter: new Map([['Location', ['!EDP']]]) },
   {
     name: 'Кассы',
@@ -135,25 +143,36 @@ export const filterItems = (items: Array<Item>, filter?: Map<string, Array<strin
   return items;
 };
 
-
 export const formTillReport = (items: Array<Item>) => {
-  const loc = new Map()
+  const loc = new Map();
   items.forEach((item: Item) => {
-      const key = item['Unit_Eq'] ? item["Unit_Eq"] : item.Location
-      if (!loc.has(key)) {
-        loc.set(key, new Array(item))
-      } else {
-        loc.get(key).push(item)
-      }
-    
+    const key = item['Unit_Eq'] ? item['Unit_Eq'] : item.Location;
+    if (!loc.has(key)) {
+      loc.set(key, new Array(item));
+    } else {
+      loc.get(key).push(item);
+    }
   });
-  return loc
-}
+  return loc;
+};
 
-export const formPlaceReport = (items: Array<Item>) :Map<string, Array<Item>> => {
-  const loc = new Map()
+export const formPlaceReport = (items: Array<Item>): Map<string, Array<Item>> => {
+  const loc = new Map();
   items.forEach((item: Item) => {
-    loc.has(item.Location)? loc.get(item.Location).push(item): loc.set(item.Location, new Array(item))
-  })
-  return new Map([...loc.entries()].sort((a, b) => a[0] < b[0]? -1:1))
-}
+    loc.has(item.Location) ? loc.get(item.Location).push(item) : loc.set(item.Location, new Array(item));
+  });
+  return new Map([...loc.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)));
+};
+
+export const formWorkplacesReport = (items: Array<Item>): Map<string, Map<string, Array<Item>>> => {
+  // PC + TC and Monitor
+  const loc = new Map();
+  items.forEach((item: Item) => {
+    loc.has(item.Location)
+      ? loc.get(item.Location).has(item.Type)
+        ? loc.get(item.Location).get(item.Type).push(item)
+        : loc.set(item.Type, Array(item))
+      : loc.set(item.Location, new Map([[item.Type, item]]));
+  });
+  return loc;
+};

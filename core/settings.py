@@ -1,8 +1,7 @@
 from pathlib import Path
 
-
-from core.logging import LOGGING  # noqa: F401
 from core.env import *  # noqa: F403
+from core.logging import LOGGING  # noqa: F401
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

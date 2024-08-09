@@ -57,9 +57,7 @@ class IDAM:
 
     @classmethod
     def decode_token(cls, token: str) -> dict:
-        return jwt.decode(
-            token, algorithms="HS256", options={"verify_signature": False}
-        )
+        return jwt.decode(token, algorithms="HS256", options={"verify_signature": False})
 
     @classmethod
     def form_user_data(cls, token) -> dict:
@@ -75,9 +73,7 @@ class IDAM:
 
             # get stores from token
             if "MCC_RU_INSIGHT_STORE_ROLE" in role:
-                user["store_role"] = cls.get_user_stores(
-                    role["MCC_RU_INSIGHT_STORE_ROLE"]
-                )
+                user["store_role"] = cls.get_user_stores(role["MCC_RU_INSIGHT_STORE_ROLE"])
         if user["store_role"]:
             user["roles"].append("MCC_RU_INSIGHT_STORE_ROLE")
         return user
